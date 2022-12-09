@@ -36,9 +36,9 @@ entity HazardUnit is
          o_MEM_WB_Flush : out std_logic); 
 end HazardUnit;
 
-signal lw, sw : std_logic;
-
 architecture structural of HazardUnit is
+
+    signal lw, sw : std_logic;
 
     begin
 

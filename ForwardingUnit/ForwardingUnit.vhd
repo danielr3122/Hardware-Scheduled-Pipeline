@@ -30,12 +30,12 @@ entity ForwardingUnit is
          o_muxReadData2Sel : out std_logic_vector(1 downto 0)); 
 end ForwardingUnit;
 
-signal ID_Rs,
-       ID_Rt,
-       EX_Rs,
-       EX_Rt : std_logic_vector(4 downto 0);
-
 architecture structural of ForwardingUnit is
+
+    signal ID_Rs,
+           ID_Rt,
+           EX_Rs,
+           EX_Rt : std_logic_vector(4 downto 0);
 
     begin
 
