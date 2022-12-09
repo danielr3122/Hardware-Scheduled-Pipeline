@@ -51,7 +51,7 @@ architecture mixed of tb_ForwardingUnit is
 
     signal s_EX_RegWrAddr,
            s_MEM_RegWrAddr,
-           s_WB_RegWrAddr : std_logic_vector(4 downto 0) := x"00000";
+           s_WB_RegWrAddr : std_logic_vector(4 downto 0) := b"00000";
 
     signal s_muxASel,
            s_muxBSel,
@@ -86,10 +86,12 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0030_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '1';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00001";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00001";
             s_BranchSel     <= '0';
+
+            -- o_muxASel should equal 10
 
             wait for gCLK_HPER*2;
 
@@ -98,9 +100,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -110,9 +112,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -122,9 +124,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -134,9 +136,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -146,9 +148,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -158,9 +160,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -170,9 +172,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -182,9 +184,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
@@ -194,9 +196,9 @@ architecture mixed of tb_ForwardingUnit is
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= x"00000";
-            s_MEM_RegWrAddr <= x"00000";
-            s_WB_RegWrAddr  <= x"00000";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
             wait for gCLK_HPER*2;
