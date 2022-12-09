@@ -14,6 +14,7 @@ use IEEE.std_logic_1164.all;
 entity ID_EX_Register is
     port(i_CLK                  : in std_logic;
          i_RST                  : in std_logic;
+         i_WE                   : in std_logic;
 
          i_ID_PCNext            : in std_logic_vector(31 downto 0);
          i_ID_Halt              : in std_logic;
@@ -90,7 +91,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_PCNext,
                 o_Data      => o_EX_PCNext);
 
@@ -99,7 +100,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_Halt,
                 o_Data      => ot_EX_Halt);
 
@@ -108,7 +109,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_DMemWr,
                 o_Data      => ot_EX_DMemWr);
 
@@ -117,7 +118,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_Write_Data_Sel,
                 o_Data      => o_EX_Write_Data_Sel);
 
@@ -126,7 +127,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_ALUsrc,
                 o_Data      => ot_EX_ALUsrc);
 
@@ -135,7 +136,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_ShiftType,
                 o_Data      => o_EX_ShiftType);
 
@@ -144,7 +145,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_ALUop,
                 o_Data      => o_EX_ALUop);
 
@@ -153,7 +154,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_ALUslt,
                 o_Data      => ot_EX_ALUslt);
 
@@ -162,7 +163,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_nAdd_Sub,
                 o_Data      => ot_EX_nAdd_Sub);
 
@@ -171,7 +172,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_UnsignedSelect,
                 o_Data      => ot_EX_UnsignedSelect);
 
@@ -180,7 +181,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => it_ID_RegWr,
                 o_Data      => ot_EX_RegWr);
 
@@ -189,7 +190,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_RegDest,
                 o_Data      => o_EX_RegDest);
 
@@ -197,7 +198,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_Inst,
                 o_Data      => o_EX_Inst);
 
@@ -205,7 +206,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_extendedImm,
                 o_Data      => o_EX_extendedImm);
 
@@ -213,7 +214,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_readData1,
                 o_Data      => o_EX_readData1);
 
@@ -221,7 +222,7 @@ architecture structural of ID_EX_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_ID_readData2,
                 o_Data      => o_EX_readData2);
 
