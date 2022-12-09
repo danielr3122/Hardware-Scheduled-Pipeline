@@ -50,6 +50,8 @@ architecture structural of ForwardingUnit is
 
         o_muxASel <= b"00";
         o_muxBSel <= b"00";
+        o_muxReadData2Sel <= b"00";
+        o_muxReadData2Sel <= b"00";
 
         a <= '1' when (i_WB_RegWr = '1');
         b <= '1' when i_WB_RegWrAddr /= b"00000";
@@ -58,7 +60,7 @@ architecture structural of ForwardingUnit is
         e <= '1' when i_MEM_RegWrAddr = EX_Rs;
         f <= '1' when i_WB_RegWrAddr = EX_Rs;
 
-        with ((a and b) and not (c and d and e) and f) select
+        with ((a and b) and (not (c and d and e)) and f) select
             p <= b"01" when '1',
                  b"00" when others;
 
@@ -92,7 +94,7 @@ architecture structural of ForwardingUnit is
         --              b"10" when (c and d and g) else
         --              b"00";
 
-        with ((a and b) and not (c and d and g) and h) select
+        with ((a and b) and (not (c and d and g)) and h) select
             n <= b"01" when '1',
                  b"00" when others;
 
