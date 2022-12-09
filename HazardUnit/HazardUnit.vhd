@@ -62,7 +62,7 @@ architecture structural of HazardUnit is
         o_MEM_WB_Stall <= '1';
 
         o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
-                      '1' when (i_JumpInsr = '1') else
+                      '1' when (i_JumpInstr = '1') else
                       '1' when (i_BranchSel = '1') else
                       '1' when (i_JumpReg = '1') else
                       '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
