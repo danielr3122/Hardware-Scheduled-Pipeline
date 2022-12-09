@@ -15,6 +15,7 @@ entity IF_ID_Register is
     generic(N   : integer := 32);
     port(i_CLK              : in std_logic;
          i_RST              : in std_logic;
+         i_WE               : in std_logic;
          i_IF_Inst          : in std_logic_vector(N-1 downto 0);
          i_IF_PCNext        : in std_logic_vector(N-1 downto 0);
          o_ID_Inst          : out std_logic_vector(N-1 downto 0);
@@ -38,7 +39,7 @@ architecture structural of IF_ID_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_IF_PCNext,
                 o_Data      => o_ID_PCNext);
 
@@ -46,7 +47,7 @@ architecture structural of IF_ID_Register is
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
-                i_WriteEn   => '1',
+                i_WriteEn   => i_WE,
                 i_Data      => i_IF_Inst,
                 o_Data      => o_ID_Inst);
 
