@@ -37,9 +37,9 @@ architecture structural of ForwardingUnit is
            EX_Rs,
            EX_Rt : std_logic_vector(4 downto 0);
 
-    signal a, b, c, d, e, f, g, h, i, j, k, l, m, : std_logic := '0';
+    signal a, b, c, d, e, f, g, h, i, j, k, l, m, : std_logic;
 
-    signal n, o, p, q, r, s, t, u : std_logic_vector(1 downto 0) := b"00";
+    signal n, o, p, q, r, s, t, u : std_logic_vector(1 downto 0);
 
     begin
 
