@@ -170,6 +170,30 @@ architecture structure of MIPS_Processor is
         o_MEM_WB_Flush : out std_logic); 
   end component;
 
+  ----------------------------
+  ------ Forwarding Unit -----
+  ----------------------------
+
+  component ForwardingUnit is
+    port(i_ID_Inst  : in std_logic_vector(31 downto 0);
+         i_EX_Inst  : in std_logic_vector(31 downto 0);
+         
+         i_MEM_RegWr : in std_logic;
+         i_WB_RegWr  : in std_logic;
+
+         i_EX_RegWrAddr  : in std_logic_vector(4 downto 0);
+         i_MEM_RegWrAddr : in std_logic_vector(4 downto 0);
+         i_WB_RegWrAddr  : in std_logic_vector(4 downto 0);
+
+         i_BranchSel : in std_logic;
+
+         o_muxASel : out std_logic_vector(1 downto 0);
+         o_muxBSel : out std_logic_vector(1 downto 0);
+
+         o_muxReadData1Sel : out std_logic_vector(1 downto 0);
+         o_muxReadData2Sel : out std_logic_vector(1 downto 0)); 
+  end component;
+
   -------------------------
   ------ Control Unit -----
   -------------------------
