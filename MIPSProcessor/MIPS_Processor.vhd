@@ -140,6 +140,36 @@ architecture structure of MIPS_Processor is
            o_o        : out std_logic_vector(N-1 downto 0));
   end component;
 
+  ---------------------------
+  -- Hazard Detection Unit --
+  ---------------------------
+
+  component HazardUnit is
+    port(i_ID_Inst  : in std_logic_vector(31 downto 0);
+        i_EX_Inst  : in std_logic_vector(31 downto 0);
+        i_MEM_Inst : in std_logic_vector(31 downto 0);
+        i_WB_Inst  : in std_logic_vector(31 downto 0);
+        
+        i_JumpInstr  : in std_logic;
+        i_BranchSel  : in std_logic;
+        i_JumpReg    : in std_logic;
+        
+        i_EX_jal  : in std_logic;
+        i_MEM_jal : in std_logic;
+        i_WB_jal  : in std_logic;
+        
+        o_PC_Stall     : out std_logic;
+        o_IF_ID_Stall  : out std_logic;
+        o_ID_EX_Stall  : out std_logic;
+        o_EX_MEM_Stall : out std_logic;
+        o_MEM_WB_Stall : out std_logic;
+        
+        o_IF_Flush     : out std_logic;
+        o_ID_EX_Flush  : out std_logic;
+        o_EX_MEM_Flush : out std_logic;
+        o_MEM_WB_Flush : out std_logic); 
+  end component;
+
   -------------------------
   ------ Control Unit -----
   -------------------------
@@ -374,8 +404,10 @@ architecture structure of MIPS_Processor is
          s_ID_xor,
          s_ID_and,
          s_ID_sameData,
+         s_ID_EX_Stall,
          s_ID_EX_Flush,
-         s_ID_RST : std_logic;
+         s_ID_RST,
+         s_invCLK : std_logic;
 
   signal s_ID_Write_Data_Sel,
          s_ID_ShiftType,
@@ -394,6 +426,8 @@ architecture structure of MIPS_Processor is
   signal s_EX_PCNext,
          s_EX_readData1,
          s_EX_readData2,
+         s_EX_OpDataA,
+         s_EX_OpDataB,
          s_EX_extendedImm,
          s_EX_Inst,
          s_EX_ALUsrcMuxOut,
@@ -407,11 +441,16 @@ architecture structure of MIPS_Processor is
          s_EX_nAdd_Sub,
          s_EX_UnsignedSel,
          s_EX_Ovfl,
+         s_EX_MEM_Stall,
+         s_EX_MEM_Flush,
+         s_EX_RST,
          s_EX_dummyALUZero : std_logic;
 
   signal s_EX_Write_Data_Sel,
          s_EX_ShiftType,
-         s_EX_RegDest : std_logic_vector(1 downto 0);
+         s_EX_RegDest,
+         s_muxASel,
+         s_muxBSel : std_logic_vector(1 downto 0);
 
   signal s_EX_ALUop : std_logic_vector(3 downto 0);
 
@@ -424,27 +463,33 @@ architecture structure of MIPS_Processor is
   signal s_MEM_PCNext,
          s_MEM_ALUout,
          s_MEM_DMemData,  -- TODO: aka read data 2
-         s_MEM_DMemOut : std_logic_vector(31 downto 0);
+         s_MEM_DMemOut,
+         s_MEM_Inst : std_logic_vector(31 downto 0);
 
   signal s_MEM_Halt,
          s_MEM_RegWr,
          s_MEM_Ovfl,
+         s_MEM_WB_Stall,
+         s_MEM_WB_Flush,
+         s_MEM_RST,
          s_MEM_DMemWr : std_logic;
 
-  signal s_MEM_Write_Data_Sel : std_logic_vector(1 downto 0);
+  signal s_MEM_Write_Data_Sel,
+         s_MEM_RegDest : std_logic_vector(1 downto 0);
 
-  signal s_MEM_DMemAddr,
-         s_MEM_RegWrAddr : std_logic_vector(4 downto 0);
+  signal s_MEM_RegWrAddr : std_logic_vector(4 downto 0);
 
   -------------------------------------
   -------- Write Back Signals ---------
   -------------------------------------
 
-  signal s_WB_Write_Data_Sel : std_logic_vector(1 downto 0);
+  signal s_WB_Write_Data_Sel,
+         s_WB_RegDest : std_logic_vector(1 downto 0);
 
   signal s_WB_DMemOut,
          s_WB_PCNext,
-         s_WB_ALUout : std_logic_vector(31 downto 0);
+         s_WB_ALUout,
+         s_WB_Inst : std_logic_vector(31 downto 0);
 
 begin
 
@@ -478,7 +523,7 @@ begin
                    '0';
 
   g_PCMux: mux2t1_32b
-    port map(i_d0 => s_IF_PCNext,
+    port map(i_d0 => s_IF_PCPlusFour,
              i_d1 => s_ID_muxToPC,
              i_s  => s_IF_pcSelect,
              o_o  => s_IF_PCMuxOut);
@@ -486,18 +531,31 @@ begin
   g_PC: register_N
     port map(i_Clock    => iCLK,
              i_Reset    => iRST,
-             i_WriteEn  => '1',
+             i_WriteEn  => s_PC_Stall,
              i_Data     => s_IF_PCMuxOut,
              o_Data     => s_NextInstAddr);
 
   g_PCPlusFour: PCPlusFour
     port map(i_d0 => s_NextInstAddr,
+             o_o  => s_IF_PCPlusFour);
+
+  g_PCNextMux: mux2t1_32b
+    port map(i_d0 => s_IF_PCPlusFour,
+             i_d1 => x"0040_0000",
+             i_s  => s_IF_Flush,
              o_o  => s_IF_PCNext);
+
+  g_InstMux: mux2t1_32b
+    port map(i_d0 => s_Inst,
+             i_d1 => x"0000_0000",
+             i_s  => s_IF_Flush,
+             o_o  => s_IF_Inst);
 
   g_IF_ID: IF_ID_Register
     port map(i_CLK       => iCLK,
              i_RST       => iRST,
-             i_IF_Inst   => s_Inst,
+             i_WE        => s_IF_ID_Stall,
+             i_IF_Inst   => s_IF_Inst,
              i_IF_PCNext => s_IF_PCNext,
              o_ID_Inst   => s_ID_Inst,
              o_ID_PCNext => s_ID_PCNext);
@@ -505,6 +563,31 @@ begin
 ---------------------------
 ------- Decode Stage ------
 ---------------------------
+
+  g_hazardDetectionUnit: HazardUnit
+    port map(i_ID_Inst  => s_ID_Inst,
+             i_EX_Inst  => s_EX_Inst,
+             i_MEM_Inst => s_MEM_Inst,
+             i_WB_Inst  => s_WB_Inst,
+                      
+             i_JumpInstr  => s_ID_JumpInstr,
+             i_BranchSel  => s_ID_and,
+             i_JumpReg    => s_ID_JumpReg,
+                      
+             i_EX_jal  => s_EX_RegDest(0),
+             i_MEM_jal => s_MEM_RegDest(0),
+             i_WB_jal  => s_WB_RegDest(0),
+                      
+             o_PC_Stall     => s_PC_Stall,
+             o_IF_ID_Stall  => s_IF_ID_Stall,
+             o_ID_EX_Stall  => s_ID_EX_Stall,
+             o_EX_MEM_Stall => s_EX_MEM_Stall,
+             o_MEM_WB_Stall => s_MEM_WB_Stall,
+                      
+             o_IF_Flush     => s_IF_Flush,
+             o_ID_EX_Flush  => s_ID_EX_Flush,
+             o_EX_MEM_Flush => s_EX_MEM_Flush,
+             o_MEM_WB_Flush => s_MEM_WB_Flush);
 
   g_shiftLeftTwo28: shiftLeftTwo_28
     port map(i_d0 => s_ID_Inst(25 downto 0),
@@ -546,8 +629,10 @@ begin
              i_d1 => s_ID_branchTarget,
              o_o  => s_ID_branchResult);
 
+  s_invCLK <= not iCLK;
+
   g_MIPSReg: regFile_MIPS
-    port map(i_Clock      => iCLK,
+    port map(i_Clock      => s_invCLK,
              i_Reset      => iRST,
              i_RegWrite   => s_RegWr,
              i_WriteReg   => s_RegWrAddr,
@@ -557,7 +642,23 @@ begin
              o_ReadData1  => s_ID_readData1,
              o_ReadData2  => s_ID_readData2);
 
-  s_ID_sameData <= '1' when (s_ID_readData1 = s_ID_readData2) else '0';
+  g_readData1Mux: mux4t1_32
+    port map(i_d0 => s_readData1,
+             i_d1 => s_MEM_ALUout,
+             i_d2 => s_EX_ALUout,
+             i_d3 => x"0000_0000",
+             i_s  => s_muxReadData1Sel,
+             o_o  => s_ID_DataCompare1);
+
+  g_readData2Mux: mux4t1_32
+    port map(i_d0 => s_readData2,
+             i_d1 => s_MEM_ALUout,
+             i_d2 => s_EX_ALUout,
+             i_d3 => x"0000_0000",
+             i_s  => s_muxReadData2Sel,
+             o_o  => s_ID_DataCompare2);
+
+  s_ID_sameData <= '1' when (s_ID_DataCompare1 = s_ID_DataCompare2) else '0';
   s_ID_xor <= s_ID_sameData xor s_ID_BranchType;
   s_ID_and <= s_ID_xor and s_ID_BranchInstr;
 
@@ -579,9 +680,13 @@ begin
              i_s  => s_ID_JumpReg,
              o_o  => s_ID_muxToPC);
 
+  s_ID_RST <= iRST or s_ID_EX_Flush;
+
   g_ID_EX: ID_EX_Register
     port map(i_CLK               => iCLK,
-             i_RST               => iRST,
+             i_RST               => s_ID_RST,
+             i_WE                => s_ID_EX_Stall,
+
              i_ID_PCNext         => s_ID_PCNext,
              i_ID_Halt           => s_ID_Halt,
              i_ID_DMemWr         => s_ID_DMemWr,
@@ -598,6 +703,7 @@ begin
              i_ID_extendedImm    => s_ID_extendedImm,
              i_ID_readData1      => s_ID_readData1,
              i_ID_readData2      => s_ID_readData2,
+
              o_EX_PCNext         => s_EX_PCNext,
              o_EX_Halt           => s_EX_Halt,
              o_EX_DMemWr         => s_EX_DMemWr,
@@ -615,18 +721,53 @@ begin
              o_EX_RegDest        => s_EX_RegDest,
              o_EX_Inst           => s_EX_Inst);
 
----------------------------
-------- Decode Stage ------
----------------------------
+----------------------------
+------ Execution Stage -----
+----------------------------
+
+  g_ForwardingUnit: ForwardingUnit
+    port map(i_ID_Inst  => s_ID_Inst,
+             i_EX_Inst  => s_EX_Inst,
+                      
+             i_MEM_RegWr     => s_MEM_RegWr,
+             i_WB_RegWr      => s_RegWr,
+
+             i_EX_RegWrAddr  => s_EX_RegWrAddr,
+             i_MEM_RegWrAddr => s_MEM_RegWrAddr,
+             i_WB_RegWrAddr  => s_RegWrAddr,
+
+             i_BranchSel     => s_ID_and,
+
+             o_muxASel => s_muxASel,
+             o_muxBSel => s_muxBSel,
+
+             o_muxReadData1Sel => s_muxReadData1Sel,
+             o_muxReadData2Sel => s_muxReadData2Sel);
+
+  g_muxA: mux4t1_32
+    port map(i_d0 => s_EX_readData1,
+             i_d1 => s_RegWrData,
+             i_d2 => s_MEM_ALUout,
+             i_d3 => x"0000_0000",
+             i_s  => s_muxASel,
+             o_o  => s_EX_OpDataA);
+
+  g_muxB: mux4t1_32
+    port map(i_d0 => s_EX_readData2,
+             i_d1 => s_RegWrData,
+             i_d2 => s_MEM_ALUout,
+             i_d3 => x"0000_0000",
+             i_s  => s_muxBSel,
+             o_o  => s_EX_OpDataB);
 
   g_ALUsrcMux: mux2t1_32b
-    port map(i_d0 => s_EX_readData2,
+    port map(i_d0 => s_EX_OpDataB,
              i_d1 => s_EX_extendedImm,
              i_s  => s_EX_ALUsrc,
              o_o  => s_EX_ALUsrcMuxOut);
 
   g_ALU: ALU
-    port map(i_opA            => s_EX_readData1,
+    port map(i_opA            => s_EX_OpDataA,
              i_opB            => s_EX_ALUsrcMuxOut,
              i_RQBimm         => s_EX_Inst(23 downto 16),
              i_shamt          => s_EX_Inst(10 downto 6),
@@ -647,27 +788,36 @@ begin
              i_s  => s_EX_RegDest,
              o_o  => s_EX_RegWrAddr);
 
+  s_EX_RST <= iRST or s_EX_MEM_Flush;
+
   g_EX_MEM: EX_MEM_Register
     port map(i_CLK                => iCLK,
-             i_RST                => iRST,
+             i_RST                => s_EX_RST,
+             i_WE                 => s_EX_MEM_Stall,
+
              i_EX_PCNext          => s_EX_PCNext,
              i_EX_Halt            => s_EX_Halt,
              i_EX_DMemWr          => s_EX_DMemWr,
              i_EX_Write_Data_Sel  => s_EX_Write_Data_Sel,
              i_EX_RegWr           => s_EX_RegWr,
-             i_EX_readData2       => s_EX_readData2,
              i_EX_Ovfl            => s_EX_Ovfl,
              i_EX_ALUout          => s_EX_ALUout,
+             i_EX_OpDataB         => s_EX_OpDataB,
+             i_EX_RegDest         => s_EX_RegDest,
              i_EX_RegWrAddr       => s_EX_RegWrAddr,
+             i_EX_Inst            => s_EX_Inst,
+
              o_MEM_PCNext         => s_MEM_PCNext,
              o_MEM_Halt           => s_MEM_Halt,
-             o_MEM_DMemWr         => s_MEM_DMemWr,
              o_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
              o_MEM_RegWr          => s_MEM_RegWr,
-             o_MEM_DMemData       => s_MEM_DMemData,
              o_MEM_Ovfl           => s_MEM_Ovfl,
+             o_MEM_DMemWr         => s_MEM_DMemWr,
+             o_MEM_DMemData       => s_MEM_DMemData,
              o_MEM_ALUout         => s_MEM_ALUout,
-             o_MEM_RegWrAddr      => s_MEM_RegWrAddr);
+             o_MEM_RegDest        => s_MEM_RegDest,
+             o_MEM_RegWrAddr      => s_MEM_RegWrAddr,
+             o_MEM_Inst           => s_MEM_Inst);
 
 ---------------------------
 ------- Memory Stage ------
@@ -686,24 +836,33 @@ begin
             we   => s_DMemWr,
             q    => s_DMemOut);
 
+  s_MEM_RST <= iRST or s_MEM_WB_Flush;
+
   g_MEM_WB: MEM_WB_Register
     port map(i_CLK                => iCLK,
-             i_RST                => iRST,
+             i_RST                => s_MEM_RST,
+             i_WE                 => s_MEM_WB_Stall,
+
              i_MEM_PCNext         => s_MEM_PCNext,
              i_MEM_Halt           => s_MEM_Halt,
              i_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
              i_MEM_RegWr          => s_MEM_RegWr,
              i_MEM_Ovfl           => s_MEM_Ovfl,
-             i_MEM_ALUout         => s_MEM_ALUout,
              i_MEM_DMemOut        => s_DMemOut,
+             i_MEM_ALUout         => s_MEM_ALUout,
+             i_MEM_RegDest        => s_MEM_RegDest,
              i_MEM_RegWrAddr      => s_MEM_RegWrAddr,
+             i_MEM_Inst           => s_MEM_Inst,
+
              o_WB_Halt            => s_Halt,
              o_WB_Ovfl            => s_Ovfl,
              o_WB_ALUout          => s_WB_ALUout,
              o_WB_Write_Data_Sel  => s_WB_Write_Data_Sel,
              o_WB_DMemOut         => s_WB_DMemOut,
              o_WB_PCNext          => s_WB_PCNext,
+             o_WB_RegDest         => s_WB_RegDest,
              o_WB_RegWrAddr       => s_RegWrAddr,
+             o_WB_Inst            => s_WB_Inst,
              o_WB_RegWr           => s_RegWr);
 
   g_WBMux: mux4t1_32

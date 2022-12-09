@@ -23,7 +23,7 @@ entity EX_MEM_Register is
          i_EX_RegWr             : in std_logic;
          i_EX_Ovfl              : in std_logic;
          i_EX_ALUout            : in std_logic_vector(31 downto 0);
-         i_EX_OpDataB         : in std_logic_vector(31 downto 0);
+         i_EX_OpDataB           : in std_logic_vector(31 downto 0);
          i_EX_RegDest           : in std_logic_vector(1 downto 0);
          i_EX_RegWrAddr         : in std_logic_vector(4 downto 0);
          i_EX_Inst              : in std_logic_vector(31 downto 0);
