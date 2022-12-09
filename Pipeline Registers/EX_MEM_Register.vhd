@@ -37,7 +37,7 @@ entity EX_MEM_Register is
          o_MEM_DMemData         : out std_logic_vector(31 downto 0);
          o_MEM_ALUout           : out std_logic_vector(31 downto 0);
          o_MEM_RegDest          : out std_logic_vector(1 downto 0);
-         o_MEM_RegWrAddr        : out std_logic_vector(4 downto 0)
+         o_MEM_RegWrAddr        : out std_logic_vector(4 downto 0);
          o_MEM_Inst             : out std_logic_vector(31 downto 0));
 end EX_MEM_Register;
 
