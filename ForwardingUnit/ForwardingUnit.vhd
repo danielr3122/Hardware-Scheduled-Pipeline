@@ -58,7 +58,7 @@ architecture structural of ForwardingUnit is
 
         o_muxASel <= b"01" when ((a and b) and not (c and d and e) and f) else
                      b"10" when (c and d and e) else
-                     b"00" for others;
+                     b"00";
 
         -- o_muxASel <= b"01" when (i_WB_RegWr = '1' and 
         --                         (i_WB_RegWrAddr /= b"00000")) and
@@ -78,7 +78,7 @@ architecture structural of ForwardingUnit is
 
         o_muxBSel <= b"01" when ((a and b) and not (c and d and g) and h) else
                      b"10" when (c and d and g) else
-                     b"00" when others;
+                     b"00";
 
         -- o_muxBSel <= b"01" when (i_WB_RegWr = '1' and 
         --                         (i_WB_RegWrAddr /= b"00000")) and
