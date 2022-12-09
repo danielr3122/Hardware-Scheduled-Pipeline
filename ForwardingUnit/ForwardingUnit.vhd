@@ -59,11 +59,11 @@ architecture structural of ForwardingUnit is
         f <= '1' when i_WB_RegWrAddr = EX_Rs;
 
         with ((a and b) and not (c and d and e) and f) select
-            p <= b"01" when b"1",
+            p <= b"01" when '1',
                  b"00" when others;
 
         with (c and d and e) select
-            q <= b"10" when b"1",
+            q <= b"10" when '1',
                  b"00" when others;
 
         o_muxASel <= p | q;
