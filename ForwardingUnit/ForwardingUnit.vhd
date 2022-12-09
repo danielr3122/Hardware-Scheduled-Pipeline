@@ -66,7 +66,7 @@ architecture structural of ForwardingUnit is
             q <= b"10" when '1',
                  b"00" when others;
 
-        o_muxASel <= p | q;
+        o_muxASel <= p or q;
 
         -- o_muxASel <= b"01" when ((a and b) and not (c and d and e) and f) else
         --              b"10" when (c and d and e) else
@@ -93,14 +93,14 @@ architecture structural of ForwardingUnit is
         --              b"00";
 
         with ((a and b) and not (c and d and g) and h) select
-            n <= b"01" when b"1",
+            n <= b"01" when '1',
                  b"00" when others;
 
         with (c and d and g) select
-            o <= b"10" when b"1",
+            o <= b"10" when '1',
                  b"00" when others;
 
-        o_muxBSel <= n | o;
+        o_muxBSel <= n or o;
 
         -- o_muxBSel <= b"01" when (i_WB_RegWr = '1' and 
         --                         (i_WB_RegWrAddr /= b"00000")) and
@@ -122,24 +122,24 @@ architecture structural of ForwardingUnit is
         m <= '1' when i_EX_RegWrAddr = ID_Rt;
 
         with (i and j) select
-            r <= b"01" when b"1",
+            r <= b"01" when '1',
                  b"00" when others;
 
         with (i and k) select
-            s <= b"10" when b"1",
+            s <= b"10" when '1',
                  b"00" when others;
 
-        o_muxReadData1Sel <= r | s;
+        o_muxReadData1Sel <= r or s;
 
         with (i and l) select
-            t <= b"01" when b"1",
+            t <= b"01" when '1',
                  b"00" when others;
 
         with (i and m) select
-            u <= b"10" when b"1",
+            u <= b"10" when '1',
                  b"00" when others;
 
-        o_muxReadData2Sel <= t | u;
+        o_muxReadData2Sel <= t or u;
 
         -- o_muxReadData1Sel <= b"01" when (i and j) else
         --                      b"10" when (i and k) else
