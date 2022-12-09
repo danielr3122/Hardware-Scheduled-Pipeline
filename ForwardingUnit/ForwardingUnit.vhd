@@ -63,7 +63,7 @@ architecture structural of ForwardingUnit is
                     o_muxASel <= "01";
                 end if;
 
-                if(i_MEM_RegWr = '1'  and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddress = EX_Rt) then
+                if(i_MEM_RegWr = '1'  and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rt) then
                     o_muxBSel <= "10";
                 elsif(i_WB_RegWr = '1'  and  (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr ='1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt))  and i_WB_RegWrAddr = EX_Rt) then
                     o_muxBSel <= "01";
