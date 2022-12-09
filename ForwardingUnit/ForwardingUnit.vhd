@@ -37,7 +37,9 @@ architecture structural of ForwardingUnit is
            EX_Rs,
            EX_Rt : std_logic_vector(4 downto 0);
 
-    signal a, b, c, d, e, f, g, h, i, j, k, l, m : std_logic := '0';
+    signal a, b, c, d, e, f, g, h, i, j, k, l, m, : std_logic := '0';
+
+    signal n, o, p, q, r, s, t, u : std_logic_vector(1 downto 0) := b"00";
 
     begin
 
@@ -56,9 +58,19 @@ architecture structural of ForwardingUnit is
         e <= '1' when i_MEM_RegWrAddr = EX_Rs;
         f <= '1' when i_WB_RegWrAddr = EX_Rs;
 
-        o_muxASel <= b"01" when ((a and b) and not (c and d and e) and f) else
-                     b"10" when (c and d and e) else
-                     b"00";
+        with ((a and b) and not (c and d and e) and f) select
+            p <= b"01" when b"1",
+                 b"00" when others;
+
+        with (c and d and e) select
+            q <= b"10" when b"1",
+                 b"00" when others;
+
+        o_muxASel <= p | q;
+
+        -- o_muxASel <= b"01" when ((a and b) and not (c and d and e) and f) else
+        --              b"10" when (c and d and e) else
+        --              b"00";
 
         -- o_muxASel <= b"01" when (i_WB_RegWr = '1' and 
         --                         (i_WB_RegWrAddr /= b"00000")) and
@@ -76,9 +88,19 @@ architecture structural of ForwardingUnit is
         g <= '1' when i_MEM_RegWrAddr = EX_Rt;
         h <= '1' when i_WB_RegWrAddr = EX_Rt;
 
-        o_muxBSel <= b"01" when ((a and b) and not (c and d and g) and h) else
-                     b"10" when (c and d and g) else
-                     b"00";
+        -- o_muxBSel <= b"01" when ((a and b) and not (c and d and g) and h) else
+        --              b"10" when (c and d and g) else
+        --              b"00";
+
+        with ((a and b) and not (c and d and g) and h) select
+            n <= b"01" when b"1",
+                 b"00" when others;
+
+        with (c and d and g) select
+            o <= b"10" when b"1",
+                 b"00" when others;
+
+        o_muxBSel <= n | o;
 
         -- o_muxBSel <= b"01" when (i_WB_RegWr = '1' and 
         --                         (i_WB_RegWrAddr /= b"00000")) and
@@ -99,13 +121,33 @@ architecture structural of ForwardingUnit is
         l <= '1' when i_MEM_RegWrAddr = ID_Rt;
         m <= '1' when i_EX_RegWrAddr = ID_Rt;
 
-        o_muxReadData1Sel <= b"01" when (i and j) else
-                             b"10" when (i and k) else
-                             b"00";
+        with (i and j) select
+            r <= b"01" when b"1",
+                 b"00" when others;
 
-        o_muxReadData2Sel <= b"01" when (i and l) else
-                             b"10" when (i and m) else
-                             b"00";
+        with (i and k) select
+            s <= b"10" when b"1",
+                 b"00" when others;
+
+        o_muxReadData1Sel <= r | s;
+
+        with (i and l) select
+            t <= b"01" when b"1",
+                 b"00" when others;
+
+        with (i and m) select
+            u <= b"10" when b"1",
+                 b"00" when others;
+
+        o_muxReadData2Sel <= t | u;
+
+        -- o_muxReadData1Sel <= b"01" when (i and j) else
+        --                      b"10" when (i and k) else
+        --                      b"00";
+
+        -- o_muxReadData2Sel <= b"01" when (i and l) else
+        --                      b"10" when (i and m) else
+        --                      b"00";
 
         -- o_muxReadData1Sel <= b"01" when (i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) else
         --                      b"10" when (i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) else
