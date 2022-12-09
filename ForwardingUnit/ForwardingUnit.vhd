@@ -99,13 +99,13 @@ architecture structural of ForwardingUnit is
         l <= '1' when i_MEM_RegWrAddr = ID_Rt;
         m <= '1' when i_EX_RegWrAddr = ID_Rt;
 
-        o_muxReadData1Sel <= b"01" when (i and j);
-                             b"10" when (i and k);
-                             b"00" when others;
+        o_muxReadData1Sel <= b"01" when (i and j) else
+                             b"10" when (i and k) else
+                             b"00";
 
-        o_muxReadData2Sel <= b"01" when (i and l);
-                             b"10" when (i and m);
-                             b"00" when others;
+        o_muxReadData2Sel <= b"01" when (i and l) else
+                             b"10" when (i and m) else
+                             b"00";
 
         -- o_muxReadData1Sel <= b"01" when (i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) else
         --                      b"10" when (i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) else
