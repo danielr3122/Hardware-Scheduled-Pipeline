@@ -11,8 +11,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity HazardUnit is
-    port(i_IF_Inst  : in std_logic_vector(31 downto 0);
-         i_ID_Inst  : in std_logic_vector(31 downto 0);
+    port(i_ID_Inst  : in std_logic_vector(31 downto 0);
          i_EX_Inst  : in std_logic_vector(31 downto 0);
          i_MEM_Inst : in std_logic_vector(31 downto 0);
          i_WB_Inst  : in std_logic_vector(31 downto 0);
@@ -38,7 +37,6 @@ entity HazardUnit is
 end HazardUnit;
 
 signal lw, sw : std_logic;
-signal IF_rs, IF_rt : std_logic_vector(4 downto 0);
 
 architecture structural of HazardUnit is
 
@@ -53,9 +51,6 @@ architecture structural of HazardUnit is
                         i_EX_Inst(31 downto 26) = "101011" or 
                         i_MEM_Inst(31 downto 26) = "101011" or 
                         i_WB_Inst(31 downto 26) = "101011");
-
-        IF_rs <= i_IF_Inst(25 downto 21);
-        IF_rt <= i_IF_Inst(20 downto 16);
 
         o_PC_Stall <= '0' when (lw = '1' or 
                                 sw = '1' or 
