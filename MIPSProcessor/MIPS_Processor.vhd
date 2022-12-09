@@ -643,7 +643,7 @@ begin
              o_ReadData2  => s_ID_readData2);
 
   g_readData1Mux: mux4t1_32
-    port map(i_d0 => s_readData1,
+    port map(i_d0 => s_ID_readData1,
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
@@ -651,7 +651,7 @@ begin
              o_o  => s_ID_DataCompare1);
 
   g_readData2Mux: mux4t1_32
-    port map(i_d0 => s_readData2,
+    port map(i_d0 => s_ID_readData2,
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
