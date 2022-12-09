@@ -97,7 +97,7 @@ architecture mixed of tb_ForwardingUnit is
 
             -- Test case 1:
             s_ID_Inst       <= x"0000_0000";
-            s_EX_Inst       <= x"0030_0000";
+            s_EX_Inst       <= x"0020_0000";
             s_MEM_RegWr     <= '1';
             s_WB_RegWr      <= '0';
             s_EX_RegWrAddr  <= b"00000";
