@@ -124,14 +124,14 @@ architecture mixed of tb_ForwardingUnit is
             wait for gCLK_HPER*2;
 
             -- Test case 3:
-            s_ID_Inst       <= x"0000_0000";
+            s_ID_Inst       <= x"0001_0000";
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= b"00000";
-            s_MEM_RegWrAddr <= b"00000";
+            s_EX_RegWrAddr  <= b"00001";
+            s_MEM_RegWrAddr <= b"00001";
             s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '0';
+            s_BranchSel     <= '1';
 
             wait for gCLK_HPER*2;
 
