@@ -23,7 +23,7 @@ entity EX_MEM_Register is
          i_EX_RegWr             : in std_logic;
          i_EX_Ovfl              : in std_logic;
          i_EX_ALUout            : in std_logic_vector(31 downto 0);
-         i_EX_readData2         : in std_logic_vector(31 downto 0);
+         i_EX_OpDataB         : in std_logic_vector(31 downto 0);
          i_EX_RegDest           : in std_logic_vector(1 downto 0);
          i_EX_RegWrAddr         : in std_logic_vector(4 downto 0);
          i_EX_Inst              : in std_logic_vector(31 downto 0);
@@ -129,12 +129,12 @@ architecture structural of EX_MEM_Register is
                 i_Data      => i_EX_ALUout,
                 o_Data      => o_MEM_ALUout);
         
-        g_ReadData2: register_N
+        g_OpDataB: register_N
             port map(
                 i_Clock     => i_CLK,
                 i_Reset     => i_RST,
                 i_WriteEn   => i_WE,
-                i_Data      => i_EX_readData2,
+                i_Data      => i_EX_OpDataB,
                 o_Data      => o_MEM_DMemData);
         
         g_RegDest: register_N

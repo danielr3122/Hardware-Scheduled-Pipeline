@@ -220,6 +220,7 @@ architecture structure of MIPS_Processor is
     generic(N   : integer := 32);
     port(i_CLK              : in std_logic;
          i_RST              : in std_logic;
+         i_WE               : in std_logic;
          i_IF_Inst          : in std_logic_vector(N-1 downto 0);
          i_IF_PCNext        : in std_logic_vector(N-1 downto 0);
          o_ID_Inst          : out std_logic_vector(N-1 downto 0);
@@ -229,6 +230,8 @@ architecture structure of MIPS_Processor is
   component ID_EX_Register is
     port(i_CLK                  : in std_logic;
          i_RST                  : in std_logic;
+         i_WE                   : in std_logic;
+
          i_ID_PCNext            : in std_logic_vector(31 downto 0);
          i_ID_Halt              : in std_logic;
          i_ID_DMemWr            : in std_logic;
@@ -245,6 +248,7 @@ architecture structure of MIPS_Processor is
          i_ID_extendedImm       : in std_logic_vector(31 downto 0);
          i_ID_readData1         : in std_logic_vector(31 downto 0);
          i_ID_readData2         : in std_logic_vector(31 downto 0);
+
          o_EX_PCNext            : out std_logic_vector(31 downto 0);
          o_EX_Halt              : out std_logic;
          o_EX_DMemWr            : out std_logic;
@@ -266,45 +270,59 @@ architecture structure of MIPS_Processor is
   component EX_MEM_Register is
     port(i_CLK                  : in std_logic;
          i_RST                  : in std_logic;
+         i_WE                   : in std_logic;
+
          i_EX_PCNext            : in std_logic_vector(31 downto 0);
          i_EX_Halt              : in std_logic;
          i_EX_DMemWr            : in std_logic;
          i_EX_Write_Data_Sel    : in std_logic_vector(1 downto 0);
          i_EX_RegWr             : in std_logic;
-         i_EX_readData2         : in std_logic_vector(31 downto 0);
          i_EX_Ovfl              : in std_logic;
          i_EX_ALUout            : in std_logic_vector(31 downto 0);
+         i_EX_OpDataB         : in std_logic_vector(31 downto 0);
+         i_EX_RegDest           : in std_logic_vector(1 downto 0);
          i_EX_RegWrAddr         : in std_logic_vector(4 downto 0);
+         i_EX_Inst              : in std_logic_vector(31 downto 0);
+
          o_MEM_PCNext           : out std_logic_vector(31 downto 0);
          o_MEM_Halt             : out std_logic;
-         o_MEM_DMemWr           : out std_logic;
          o_MEM_Write_Data_Sel   : out std_logic_vector(1 downto 0);
          o_MEM_RegWr            : out std_logic;
-         o_MEM_DMemData         : out std_logic_vector(31 downto 0);
          o_MEM_Ovfl             : out std_logic;
+         o_MEM_DMemWr           : out std_logic;
+         o_MEM_DMemData         : out std_logic_vector(31 downto 0);
          o_MEM_ALUout           : out std_logic_vector(31 downto 0);
-         o_MEM_RegWrAddr        : out std_logic_vector(4 downto 0));
+         o_MEM_RegDest          : out std_logic_vector(1 downto 0);
+         o_MEM_RegWrAddr        : out std_logic_vector(4 downto 0)
+         o_MEM_Inst             : out std_logic_vector(31 downto 0));
   end component;
 
   component MEM_WB_Register is
     generic(N   : integer := 32);
     port(i_CLK                  : in std_logic;
          i_RST                  : in std_logic;
+         i_WE                   : in std_logic;
+
          i_MEM_PCNext           : in std_logic_vector(31 downto 0);
          i_MEM_Halt             : in std_logic;
          i_MEM_Write_Data_Sel   : in std_logic_vector(1 downto 0);
          i_MEM_RegWr            : in std_logic;
          i_MEM_Ovfl             : in std_logic;
-         i_MEM_ALUout           : in std_logic_vector(31 downto 0);
          i_MEM_DMemOut          : in std_logic_vector(31 downto 0);
+         i_MEM_ALUout           : in std_logic_vector(31 downto 0);
+         i_MEM_RegDest          : in std_logic_vector(1 downto 0);
          i_MEM_RegWrAddr        : in std_logic_vector(4 downto 0);
+         i_MEM_Inst             : in std_logic_vector(31 downto 0);
+         
          o_WB_Halt              : out std_logic;
          o_WB_Ovfl              : out std_logic;
          o_WB_ALUout            : out std_logic_vector(31 downto 0);
          o_WB_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_WB_DMemOut           : out std_logic_vector(31 downto 0);
          o_WB_PCNext            : out std_logic_vector(31 downto 0);
+         o_WB_RegDest           : out std_logic_vector(1 downto 0);
          o_WB_RegWrAddr         : out std_logic_vector(4 downto 0);
+         o_WB_Inst              : out std_logic_vector(31 downto 0);
          o_WB_RegWr             : out std_logic);
   end component;
 
@@ -313,10 +331,15 @@ architecture structure of MIPS_Processor is
   -------------------------------------
 
   signal s_jumpToPC,
+         s_IF_PCPlusFour,
          s_IF_PCNext,
+         s_IF_Inst,
          s_IF_PCMuxOut    : std_logic_vector(31 downto 0);
 
-  signal s_IF_pcSelect : std_logic;
+  signal s_IF_pcSelect,
+         s_PC_Stall,
+         s_IF_Flush,
+         s_IF_ID_Stall : std_logic;
 
   -------------------------------------
   ---------- Decode Signals -----------
@@ -329,6 +352,8 @@ architecture structure of MIPS_Processor is
          s_ID_branchTarget,
          s_ID_readData1,
          s_ID_readData2,
+         s_ID_DataCompare1,
+         s_ID_DataCompare2,
          s_ID_branchResult,
          s_ID_branchMuxOut,
          s_ID_jumpMuxOut,
@@ -348,11 +373,15 @@ architecture structure of MIPS_Processor is
          s_ID_extSel,
          s_ID_xor,
          s_ID_and,
-         s_ID_sameData : std_logic;
+         s_ID_sameData,
+         s_ID_EX_Flush,
+         s_ID_RST : std_logic;
 
   signal s_ID_Write_Data_Sel,
          s_ID_ShiftType,
-         s_ID_RegDest : std_logic_vector(1 downto 0);
+         s_ID_RegDest,
+         s_muxReadData1Sel,
+         s_muxReadData2Sel : std_logic_vector(1 downto 0);
 
   signal s_ID_ALUop : std_logic_vector(3 downto 0);
 
