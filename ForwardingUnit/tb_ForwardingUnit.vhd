@@ -47,7 +47,7 @@ architecture mixed of tb_ForwardingUnit is
         
     signal s_MEM_RegWr,
            s_WB_RegWr,
-           s_BranchSel : std_logic;
+           s_BranchSel : std_logic := '0';
 
     signal s_EX_RegWrAddr,
            s_MEM_RegWrAddr,
