@@ -37,7 +37,7 @@ architecture structural of ForwardingUnit is
            EX_Rs,
            EX_Rt : std_logic_vector(4 downto 0);
 
-    signal a, b, c, d, e, f, g, h, i, j, k, l, m : std_logic;
+    signal a, b, c, d, e, f, g, h, i, j, k, l, m, v, w : std_logic;
 
     signal n, o, p, q, r, s, t, u : std_logic_vector(1 downto 0);
 
@@ -60,11 +60,15 @@ architecture structural of ForwardingUnit is
         e <= '1' when i_MEM_RegWrAddr = EX_Rs;
         f <= '1' when i_WB_RegWrAddr = EX_Rs;
 
-        with ((a and b) and (not (c and d and e)) and f) select
+        v <= ((a and b) and (not (c and d and e)) and f);
+
+        with v select
             p <= b"01" when '1',
                  b"00" when others;
 
-        with (c and d and e) select
+        w <= (c and d and e);
+
+        with w select
             q <= b"10" when '1',
                  b"00" when others;
 
