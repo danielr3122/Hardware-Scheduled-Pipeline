@@ -115,7 +115,7 @@ architecture mixed of tb_ForwardingUnit is
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
             s_EX_RegWrAddr  <= b"00001";
-            s_MEM_RegWrAddr <= b"00000";
+            s_MEM_RegWrAddr <= b"00001";
             s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '1';
 
