@@ -52,11 +52,8 @@ architecture structural of HazardUnit is
                         i_MEM_Inst(31 downto 26) = "101011" or 
                         i_WB_Inst(31 downto 26) = "101011");
 
-        o_PC_Stall <= '0' when (lw = '1' or 
-                                sw = '1' or 
-                                i_EX_jal = '1' or 
-                                i_MEM_jal = '1' or
-                                i_WB_jal = '1') else
+        o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
+                      '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
                       '1';
 
         o_IF_ID_Stall  <= '1';
@@ -64,14 +61,11 @@ architecture structural of HazardUnit is
         o_EX_MEM_Stall <= '1';
         o_MEM_WB_Stall <= '1';
 
-        o_IF_Flush <= '1' when (lw = '1' or
-                                sw = '1' or
-                                i_JumpInstr = '1' or
-                                i_BranchSel = '1' or
-                                i_JumpReg = '1' or
-                                i_EX_jal = '1' or
-                                i_MEM_jal = '1' or
-                                i_WB_jal = '1') else
+        o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
+                      '1' when (i_JumpInsr = '1') else
+                      '1' when (i_BranchSel = '1') else
+                      '1' when (i_JumpReg = '1') else
+                      '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
                       '0';
 
         o_ID_EX_Flush  <= '0';
