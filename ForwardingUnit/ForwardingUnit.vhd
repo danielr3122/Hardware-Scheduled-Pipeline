@@ -53,43 +53,43 @@ architecture structural of ForwardingUnit is
         o_muxReadData2Sel <= b"00";
         o_muxReadData2Sel <= b"00";
 
-        a <= '1' when (i_WB_RegWr = '1');
-        b <= '1' when i_WB_RegWrAddr /= b"00000";
-        c <= '1' when i_MEM_RegWr = '1';
-        d <= '1' when i_MEM_RegWrAddr /= b"00000";
-        e <= '1' when i_MEM_RegWrAddr = EX_Rs;
-        f <= '1' when i_WB_RegWrAddr = EX_Rs;
+        -- a <= '1' when (i_WB_RegWr = '1');
+        -- b <= '1' when i_WB_RegWrAddr /= b"00000";
+        -- c <= '1' when i_MEM_RegWr = '1';
+        -- d <= '1' when i_MEM_RegWrAddr /= b"00000";
+        -- e <= '1' when i_MEM_RegWrAddr = EX_Rs;
+        -- f <= '1' when i_WB_RegWrAddr = EX_Rs;
 
-        v <= ((a and b) and (not (c and d and e)) and f);
+        -- v <= ((a and b) and (not (c and d and e)) and f);
 
-        with v select
-            p <= b"01" when '1',
-                 b"00" when others;
+        -- with v select
+        --     p <= b"01" when '1',
+        --          b"00" when others;
 
-        w <= (c and d and e);
+        -- w <= (c and d and e);
 
-        with w select
-            q <= b"10" when '1',
-                 b"00" when others;
+        -- with w select
+        --     q <= b"10" when '1',
+        --          b"00" when others;
 
-        o_muxASel <= p or q;
+        -- o_muxASel <= p or q;
 
         -- o_muxASel <= b"01" when ((a and b) and not (c and d and e) and f) else
         --              b"10" when (c and d and e) else
         --              b"00";
 
-        -- o_muxASel <= b"01" when (i_WB_RegWr = '1' and 
-        --                         (i_WB_RegWrAddr /= b"00000")) and
-        --                         not(i_MEM_RegWr = '1' and
-        --                         (i_MEM_RegWrAddr /= b"00000") and
-        --                         (i_MEM_RegWrAddr = EX_Rs)) and
-        --                         (i_WB_RegWrAddr = EX_Rs) else
+        o_muxASel <= b"01" when (i_WB_RegWr = '1' and 
+                                (i_WB_RegWrAddr /= b"00000")) and
+                                not(i_MEM_RegWr = '1' and
+                                (i_MEM_RegWrAddr /= b"00000") and
+                                (i_MEM_RegWrAddr = EX_Rs)) and
+                                (i_WB_RegWrAddr = EX_Rs) else
 
-        --              b"10" when ((i_MEM_RegWr = '1') and 
-        --                         (i_MEM_RegWrAddr /= b"00000") and 
-        --                         (i_MEM_RegWrAddr = EX_Rs)) else
+                     b"10" when ((i_MEM_RegWr = '1') and 
+                                (i_MEM_RegWrAddr /= b"00000") and 
+                                (i_MEM_RegWrAddr = EX_Rs)) else
                     
-        --              b"00";
+                     b"00";
 
         g <= '1' when i_MEM_RegWrAddr = EX_Rt;
         h <= '1' when i_WB_RegWrAddr = EX_Rt;
