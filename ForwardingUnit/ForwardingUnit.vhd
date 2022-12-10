@@ -61,9 +61,9 @@ architecture structural of ForwardingUnit is
 
         -- MUX A Selector
 
-        cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
+        cond1 <= '1' when ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
 
-        cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
+        cond2 <= '1' when ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
 
         with cond1 & cond2 select
             o_muxASel <= b"10" when b"10",
