@@ -45,12 +45,14 @@ architecture structural of HazardUnit is
         lw <= '1' when (i_ID_Inst(31 downto 26) = "100011" or 
                         i_EX_Inst(31 downto 26) = "100011" or 
                         i_MEM_Inst(31 downto 26) = "100011" or 
-                        i_WB_Inst(31 downto 26) = "100011");
+                        i_WB_Inst(31 downto 26) = "100011") else
+              '0';
 
         sw <= '1' when (i_ID_Inst(31 downto 26) = "101011" or 
                         i_EX_Inst(31 downto 26) = "101011" or 
                         i_MEM_Inst(31 downto 26) = "101011" or 
-                        i_WB_Inst(31 downto 26) = "101011");
+                        i_WB_Inst(31 downto 26) = "101011") else
+              '0';
 
         o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
                       '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
