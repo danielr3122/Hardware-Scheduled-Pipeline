@@ -598,9 +598,9 @@ begin
              i_BranchSel  => s_ID_and,
              i_JumpReg    => s_ID_JumpReg,
                       
-             i_EX_jal  => s_EX_RegDest(0),
-             i_MEM_jal => s_MEM_RegDest(0),
-             i_WB_jal  => s_WB_RegDest(0),
+             i_EX_jal  => (not(s_EX_RegDest(1)) and s_EX_RegDest(0)),
+             i_MEM_jal => (not(s_MEM_RegDest(1)) and s_MEM_RegDest(0)),
+             i_WB_jal  => (not(s_WB_RegDest(1)) and s_WB_RegDest(0)),
                       
              o_PC_Stall     => s_PC_Stall,
              o_IF_ID_Stall  => s_IF_ID_Stall,
