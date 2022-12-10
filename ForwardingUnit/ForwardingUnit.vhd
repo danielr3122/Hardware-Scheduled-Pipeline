@@ -58,6 +58,9 @@ architecture structural of ForwardingUnit is
         o_muxReadData1Sel <= b"00";
         o_muxReadData2Sel <= b"00";
 
+
+        -- MUX A Selector
+
         cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
 
         cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
@@ -66,6 +69,8 @@ architecture structural of ForwardingUnit is
             o_muxASel <= "10" when "10";
             o_muxASel <= "01" when "01";
             b"00" when others;
+
+        -- MUX B Selector
 
         cond3 <= ((i_MEM_RegWr = '1')  and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt));
 
@@ -76,6 +81,8 @@ architecture structural of ForwardingUnit is
             o_muxBSel <= "01" when "01";
             b"00" when others;
 
+        -- MUX Read Data2 Selector
+
         cond5 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rt));
 
         cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
@@ -85,11 +92,13 @@ architecture structural of ForwardingUnit is
             o_muxReadData2Sel <= "01" when "01";
             b"00" when others;
 
+        -- MUX Read Data1 Selector
+
         cond7 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rs));
 
         cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
 
-        with cond5 & cond6 select
+        with cond7 & cond8 select
             o_muxReadData1Sel <= "10" when "10";
             o_muxReadData1Sel <= "01" when "01";
             b"00" when others;
