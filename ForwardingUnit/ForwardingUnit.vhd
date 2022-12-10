@@ -71,9 +71,9 @@ architecture structural of ForwardingUnit is
                     o_muxReadData2Sel <= "01";
                 end if;
 
-                if(i_BranchSel = '1' and i_EX_RegWrAddr = ID_Rs) then
+                if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) then
                     o_muxReadData1Sel <= "10";
-                elsif(i_BranchSel = '1' and i_MEM_RegWrAddr = ID_Rs) then
+                elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) then
                     o_muxReadData1Sel <= "01";
                 end if;
 
