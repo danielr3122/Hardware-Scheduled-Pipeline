@@ -66,9 +66,9 @@ architecture structural of ForwardingUnit is
         cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
 
         with cond1 & cond2 select
-            o_muxASel <= "10" when "10";
-            o_muxASel <= "01" when "01";
-            b"00" when others;
+            o_muxASel <= b"10" when b"10",
+                         b"01" when b"01",
+                         b"00" when others;
 
         -- MUX B Selector
 
@@ -77,9 +77,9 @@ architecture structural of ForwardingUnit is
         cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
 
         with cond3 & cond4 select
-            o_muxBSel <= "10" when "10";
-            o_muxBSel <= "01" when "01";
-            b"00" when others;
+            o_muxBSel <= b"10" when b"10",
+                         b"01" when b"01",
+                         b"00" when others;
 
         -- MUX Read Data2 Selector
 
@@ -88,9 +88,9 @@ architecture structural of ForwardingUnit is
         cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
 
         with cond5 & cond6 select
-            o_muxReadData2Sel <= "10" when "10";
-            o_muxReadData2Sel <= "01" when "01";
-            b"00" when others;
+            o_muxReadData2Sel <= b"10" when b"10",
+                                 b"01" when b"01",
+                                 b"00" when others;
 
         -- MUX Read Data1 Selector
 
@@ -99,9 +99,9 @@ architecture structural of ForwardingUnit is
         cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
 
         with cond7 & cond8 select
-            o_muxReadData1Sel <= "10" when "10";
-            o_muxReadData1Sel <= "01" when "01";
-            b"00" when others;
+            o_muxReadData1Sel <= b"10" when b"10",
+                                 b"01" when b"01",
+                                 b"00" when others;
 
         -- process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
             
