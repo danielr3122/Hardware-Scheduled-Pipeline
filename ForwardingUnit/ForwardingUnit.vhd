@@ -44,7 +44,7 @@ architecture structural of ForwardingUnit is
         EX_Rs <= i_EX_Inst(25 downto 21);
         EX_Rt <= i_EX_Inst(20 downto 16);
 
-        process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_EX_RegWrAddr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
+        process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
             
             begin
 
