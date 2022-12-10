@@ -37,6 +37,15 @@ architecture structural of ForwardingUnit is
            EX_Rs,
            EX_Rt : std_logic_vector(4 downto 0);
 
+    signal cond1,
+           cond2,
+           cond3,
+           cond4,
+           cond5,
+           cond6,
+           cond7,
+           cond8 : std_logic_vector(1 downto 0);
+
     begin
 
         ID_Rs <= i_ID_Inst(25 downto 21);
@@ -44,39 +53,80 @@ architecture structural of ForwardingUnit is
         EX_Rs <= i_EX_Inst(25 downto 21);
         EX_Rt <= i_EX_Inst(20 downto 16);
 
-        process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
+        o_muxASel <= b"00";
+        o_muxBSel <= b"00";
+        o_muxReadData1Sel <= b"00";
+        o_muxReadData2Sel <= b"00";
+
+        cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
+
+        cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
+
+        with cond1 & cond2 select
+            o_muxASel <= "10" when "10";
+            o_muxASel <= "01" when "01";
+            b"00" when others;
+
+        cond3 <= ((i_MEM_RegWr = '1')  and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt));
+
+        cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
+
+        with cond3 & cond4 select
+            o_muxBSel <= "10" when "10";
+            o_muxBSel <= "01" when "01";
+            b"00" when others;
+
+        cond5 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rt));
+
+        cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
+
+        with cond5 & cond6 select
+            o_muxReadData2Sel <= "10" when "10";
+            o_muxReadData2Sel <= "01" when "01";
+            b"00" when others;
+
+        cond7 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rs));
+
+        cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
+
+        with cond5 & cond6 select
+            o_muxReadData1Sel <= "10" when "10";
+            o_muxReadData1Sel <= "01" when "01";
+            b"00" when others;
+
+        -- process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
             
-            begin
+            -- begin
 
-                o_muxASel <= b"00";
-                o_muxBSel <= b"00";
-                o_muxReadData1Sel <= b"00";
-                o_muxReadData2Sel <= b"00";
+                -- o_muxASel <= b"00";
+                -- o_muxBSel <= b"00";
+                -- o_muxReadData1Sel <= b"00";
+                -- o_muxReadData2Sel <= b"00";
 
-                if(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rs) then
-                    o_muxASel <= "10";
-                elsif(i_WB_RegWr = '1'  and (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs))  and i_WB_RegWrAddr = EX_Rs) then
-                    o_muxASel <= "01";
-                end if;
+                -- if(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rs) then
+                --     o_muxASel <= "10";
+                -- elsif(i_WB_RegWr = '1'  and (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs))  and i_WB_RegWrAddr = EX_Rs) then
+                --     o_muxASel <= "01";
+                -- end if;
 
-                if(i_MEM_RegWr = '1'  and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rt) then
-                    o_muxBSel <= "10";
-                elsif(i_WB_RegWr = '1'  and  (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr ='1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt))  and i_WB_RegWrAddr = EX_Rt) then
-                    o_muxBSel <= "01";
-                end if;
+                -- if(i_MEM_RegWr = '1'  and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rt) then
+                --     o_muxBSel <= "10";
+                -- elsif(i_WB_RegWr = '1'  and  (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr ='1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt))  and i_WB_RegWrAddr = EX_Rt) then
+                --     o_muxBSel <= "01";
+                -- end if;
 
-                if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rt)) then
-                    o_muxReadData2Sel <= "10";
-                elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rt)) then
-                    o_muxReadData2Sel <= "01";
-                end if;
+                -- if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rt)) then
+                --     o_muxReadData2Sel <= "10";
+                -- elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rt)) then
+                --     o_muxReadData2Sel <= "01";
+                -- end if;
 
-                if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) then
-                    o_muxReadData1Sel <= "10";
-                elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) then
-                    o_muxReadData1Sel <= "01";
-                end if;
+                -- if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) then
+                --     o_muxReadData1Sel <= "10";
+                -- elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) then
+                --     o_muxReadData1Sel <= "01";
+                -- end if;
 
-        end process;
+        -- end process;
         
 end structural;
