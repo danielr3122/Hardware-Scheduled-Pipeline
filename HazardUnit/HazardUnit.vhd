@@ -58,8 +58,7 @@ architecture structural of HazardUnit is
                       '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
                       '1';
 
-        o_IF_ID_Stall  <= '0' when (i_JumpInstr = '1') else
-                          '1';
+        o_IF_ID_Stall  <= '1';
         o_ID_EX_Stall  <= '1';
         o_EX_MEM_Stall <= '1';
         o_MEM_WB_Stall <= '1';
