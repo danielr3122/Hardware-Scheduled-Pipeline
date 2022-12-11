@@ -44,44 +44,46 @@ architecture structural of HazardUnit is
 
     begin
 
-        lw <= '1' when (i_ID_Inst(31 downto 26) = "100011" or 
-                        i_EX_Inst(31 downto 26) = "100011" or 
-                        i_MEM_Inst(31 downto 26) = "100011" or 
-                        i_WB_Inst(31 downto 26) = "100011") else
-              '0';
+        --lw <= '1' when (i_ID_Inst(31 downto 26) = "100011" or 
+        --                i_EX_Inst(31 downto 26) = "100011" or 
+        --                i_MEM_Inst(31 downto 26) = "100011" or 
+        --                i_WB_Inst(31 downto 26) = "100011") else
+        --      '0';
+--
+        --sw <= '1' when (i_ID_Inst(31 downto 26) = "101011" or 
+        --                i_EX_Inst(31 downto 26) = "101011" or 
+        --                i_MEM_Inst(31 downto 26) = "101011" or 
+        --                i_WB_Inst(31 downto 26) = "101011") else
+        --      '0';
+--
+        --bInstr <= '1' when (i_ID_Inst(31 downto 26) = "000100" or 
+        --                    i_ID_Inst(31 downto 26) = "000101") else
+        --          '0';
+        --
+        --jInstr <= '1' when (i_ID_Inst(31 downto 26) = "000010") else
+        --          '0'; 
+--
+        --jrInstr <= '1' when (i_ID_Inst(31 downto 26) & i_ID_Inst(5 downto 0) = "000000001000") else
+        --           '0';
 
-        sw <= '1' when (i_ID_Inst(31 downto 26) = "101011" or 
-                        i_EX_Inst(31 downto 26) = "101011" or 
-                        i_MEM_Inst(31 downto 26) = "101011" or 
-                        i_WB_Inst(31 downto 26) = "101011") else
-              '0';
-
-        bInstr <= '1' when (i_ID_Inst(31 downto 26) = "000100" or 
-                            i_ID_Inst(31 downto 26) = "000101") else
-                  '0';
-        
-        jInstr <= '1' when (i_ID_Inst(31 downto 26) = "000010") else
-                  '0'; 
-
-        jrInstr <= '1' when (i_ID_Inst(31 downto 26) & i_ID_Inst(5 downto 0) = "000000001000") else
-                   '0';
-
-        o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
-                      '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
-                      '1';
-
+        o_PC_Stall <= '1';
+        --o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
+        --              '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
+        --              '1';
+--
         o_IF_ID_Stall  <= '1';
         o_ID_EX_Stall  <= '1';
         o_EX_MEM_Stall <= '1';
         o_MEM_WB_Stall <= '1';
-
-        o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
-                      '1' when (i_JumpInstr = '1' and jInstr = '1') else
-                      '1' when (i_BranchSel = '1' and bInstr = '1') else
-                      '1' when (i_JumpReg = '1'and jrInstr = '1') else
-                      '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
-                      '0';
-
+--
+        o_IF_Flush <= '0';
+        --o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
+        --              '1' when (i_JumpInstr = '1' and jInstr = '1') else
+        --              '1' when (i_BranchSel = '1' and bInstr = '1') else
+        --              '1' when (i_JumpReg = '1'and jrInstr = '1') else
+        --              '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
+        --              '0';
+--
         o_ID_EX_Flush  <= '0';
         o_EX_MEM_Flush <= '0';
         o_MEM_WB_Flush <= '0';
