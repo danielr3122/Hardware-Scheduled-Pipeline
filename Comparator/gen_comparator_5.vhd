@@ -11,9 +11,8 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity gen_comparator_5 is
-    generic(N : integer := 5);
-    port(i_d0 : in std_logic_vector(N-1 downto 0);
-         i_d1 : in std_logic_vector(N-1 downto 0);
+    port(i_d0 : in std_logic_vector(4 downto 0);
+         i_d1 : in std_logic_vector(4 downto 0);
          o_o  : out std_logic);
 end gen_comparator_5;
 
