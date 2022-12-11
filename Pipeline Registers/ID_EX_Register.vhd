@@ -78,7 +78,7 @@ architecture structural of ID_EX_Register is
            ot_EX_ALUslt,
            ot_EX_nAdd_Sub,
            ot_EX_UnsignedSelect,
-           ot_EX_RegWr 
+           ot_EX_RegWr, 
            ot_EX_JumpInstr : std_logic_vector(0 downto 0);
 
     begin
