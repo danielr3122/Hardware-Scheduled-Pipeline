@@ -83,48 +83,102 @@ architecture structural of ForwardingUnit is
 
         cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
 
-        -- cond1 <= i_MEM_RegWr and (i_MEM_RegWrAddr(0) or i_MEM_RegWrAddr(1) or i_MEM_RegWrAddr(2) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)) and
-        --          (not(((i_MEM_RegWrAddr(0) xor EX_Rs(0)) or (i_MEM_RegWrAddr(1) xor EX_Rs(1)) or (i_MEM_RegWrAddr(2) xor EX_Rs(2)) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)))));
+        -- cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
+        
+        g_c3: comparator_5
+            port map(i_d0 => i_WB_RegWrAddr,
+                     i_d1 => b"00000",
+                     o_o  => eq3);
+        
+        g_c4: comparator_5
+            port map(i_d0 => i_WB_RegWrAddr,
+                     i_d1 => EX_Rs,
+                     o_o  => eq4);
 
-        cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
+        cond2 <= (i_WB_RegWr and (not eq3) and (not cond1) and eq4);
 
-        with cond1 & cond2 select
-            o_muxASel <= b"10" when b"10",
-                         b"01" when b"01",
-                         b"00" when others;
+        o_muxASel <= (cond1 & cond2);
 
         -- MUX B Selector
 
-        cond3 <= ((i_MEM_RegWr = '1')  and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt));
+        g_c5: comparator_5
+            port map(i_d0 => i_MEM_RegWrAddr,
+                     i_d1 => EX_Rt,
+                     o_o  => eq5);
 
-        cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
+        g_c6: comparator_5
+            port map(i_d0 => i_WB_RegWrAddr,
+                     i_d1 => EX_Rt,
+                     o_o  => eq6);
 
-        with cond3 & cond4 select
-            o_muxBSel <= b"10" when b"10",
-                         b"01" when b"01",
-                         b"00" when others;
+        cond3 <= (i_MEM_RegWr and (not eq1) and eq5);
+
+        -- cond3 <= ((i_MEM_RegWr = '1')  and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt));
+
+        cond4 <= (i_WB_RegWr and (not eq3) and (not cond3) and eq6);
+
+        o_muxBSel <= cond3 & cond4;
+
+        -- cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
+
+        -- with cond3 & cond4 select
+        --     o_muxBSel <= b"10" when b"10",
+        --                  b"01" when b"01",
+        --                  b"00" when others;
 
         -- MUX Read Data2 Selector
 
-        cond5 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rt));
+        g_c7: comparator_5
+        port map(i_d0 => i_EX_RegWrAddr,
+                 i_d1 => ID_Rt,
+                 o_o  => eq7);
 
-        cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
+        cond5 <= (i_BranchSel and eq7);
 
-        with cond5 & cond6 select
-            o_muxReadData2Sel <= b"10" when b"10",
-                                 b"01" when b"01",
-                                 b"00" when others;
+        -- cond5 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rt));
+
+        g_c8: comparator_5
+        port map(i_d0 => i_MEM_RegWrAddr,
+                 i_d1 => ID_Rt,
+                 o_o  => eq8);
+
+        cond6 <= (i_BranchSel and eq8);
+
+        o_muxReadData2Sel <= (cond5 & cond6);
+
+        -- cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
+
+        -- with cond5 & cond6 select
+        --     o_muxReadData2Sel <= b"10" when b"10",
+        --                          b"01" when b"01",
+        --                          b"00" when others;
 
         -- MUX Read Data1 Selector
 
-        cond7 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rs));
+        g_c9: comparator_5
+        port map(i_d0 => i_EX_RegWrAddr,
+                 i_d1 => ID_Rs,
+                 o_o  => eq9);
 
-        cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
+        cond7 <= (i_BranchSel and eq9);
 
-        with cond7 & cond8 select
-            o_muxReadData1Sel <= b"10" when b"10",
-                                 b"01" when b"01",
-                                 b"00" when others;
+        -- cond7 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rs));
+
+        g_c10: comparator_5
+        port map(i_d0 => i_MEM_RegWrAddr,
+                 i_d1 => ID_Rs,
+                 o_o  => eq10);
+
+        cond8 <= (i_BranchSel and eq10);
+
+        o_muxReadData1Sel <= (cond7 & cond8);
+
+        -- cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
+
+        -- with cond7 & cond8 select
+        --     o_muxReadData1Sel <= b"10" when b"10",
+        --                          b"01" when b"01",
+        --                          b"00" when others;
 
         -- process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
             
