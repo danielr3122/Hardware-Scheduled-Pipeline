@@ -145,8 +145,12 @@ architecture mixed of ForwardingUnit is
                  i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq8);
 
-        cond5 <= (i_BranchSel = '1' and bInstr = '1' and eq7);
-        cond6 <= (i_BranchSel = '1' and bInstr = '1' and eq8);
+        --cond5 <= (i_BranchSel = '1' and bInstr = '1' and eq7);
+        cond5 <= '1' when (i_BranchSel = '1' and bInstr = '1' and eq7 = '1') else
+                 '0';
+        --cond6 <= (i_BranchSel = '1' and bInstr = '1' and eq8);
+        cond6 <= '1' when (i_BranchSel = '1' and bInstr = '1' and eq8 = '1') else
+                 '0';
         cat3 <= cond5 & cond6;
 
         with cat3 select
@@ -166,8 +170,12 @@ architecture mixed of ForwardingUnit is
                  i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq10);
 
-        cond7 <= (i_BranchSel = '1' and bInstr = '1' and eq9);
-        cond8 <= (i_BranchSel = '1' and bInstr = '1' and eq10);
+        --cond7 <= (i_BranchSel = '1' and bInstr = '1' and eq9);
+        cond7 <= '1' when (i_BranchSel = '1' and bInstr = '1' and eq9 = '1') else 
+                 '0';
+        --cond8 <= (i_BranchSel = '1' and bInstr = '1' and eq10);
+        cond8 <= '1' when (i_BranchSel = '1' and bInstr = '1' and eq10 = '1') else 
+                 '0';
         cat4 <= cond7 & cond8;
 
         with cat4 select
