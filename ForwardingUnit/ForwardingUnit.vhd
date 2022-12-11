@@ -99,10 +99,10 @@ architecture structural of ForwardingUnit is
 
         -- o_muxASel <= (cond1 & cond2);
 
-        with cond1 & cond2 select
-            o_muxBSel <= b"10" when b"10",
-                         b"01" when b"01",
-                         b"00" when others;
+        with (cond1 & cond2) select
+            o_muxBSel <= "10" when b"10",
+                         "01" when b"01",
+                         "00" when others;
 
         -- MUX B Selector
 
