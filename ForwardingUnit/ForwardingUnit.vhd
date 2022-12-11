@@ -32,6 +32,12 @@ end ForwardingUnit;
 
 architecture structural of ForwardingUnit is
 
+    component comparator_5 is
+        port(i_d0 : in std_logic_vector(4 downto 0);
+             i_d1 : in std_logic_vector(4 downto 0);
+             o_o  : out std_logic);
+    end component;
+
     signal ID_Rs,
            ID_Rt,
            EX_Rs,
@@ -45,6 +51,8 @@ architecture structural of ForwardingUnit is
            cond6,
            cond7,
            cond8 : std_logic;
+
+    signal eq1, eq2, eq3, eq4 : std_logic;
 
     begin
 
@@ -62,8 +70,18 @@ architecture structural of ForwardingUnit is
         -- MUX A Selector
 
         -- cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
+        
+        g_c1: comparator_5
+            port map(i_d0 <= i_MEM_RegWrAddr,
+                     i_d1 <= b"00000",
+                     o_o  <= eq1);
+        
+        g_c2: comparator_5
+            port map(i_d0 <= i_MEM_RegWrAddr,
+                     i_d1 <= EX_Rs,
+                     o_o  <= eq2);
 
-        cond1 <= i_MEM_RegWrAddr /= "00000";
+        cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
 
         -- cond1 <= i_MEM_RegWr and (i_MEM_RegWrAddr(0) or i_MEM_RegWrAddr(1) or i_MEM_RegWrAddr(2) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)) and
         --          (not(((i_MEM_RegWrAddr(0) xor EX_Rs(0)) or (i_MEM_RegWrAddr(1) xor EX_Rs(1)) or (i_MEM_RegWrAddr(2) xor EX_Rs(2)) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)))));
