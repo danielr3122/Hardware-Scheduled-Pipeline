@@ -16,7 +16,7 @@ entity xorg_N is
          o_F  : out std_logic_vector(N-1 downto 0));
 end xorg_N;
 
-architecture mixed of comparator is   
+architecture mixed of xorg_N is   
 
     component xorg2 is
         port(i_a          : in std_logic;
