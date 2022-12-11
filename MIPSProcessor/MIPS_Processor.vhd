@@ -555,10 +555,12 @@ begin
 ------- Fetch Stage ------
 --------------------------
 
-  s_IF_pcSelect <= '1' when s_ID_JumpInstr else
-                   '1' when s_ID_JumpReg else
-                   '1' when s_ID_and else
-                   '0';
+  -- s_IF_pcSelect <= '1' when s_ID_JumpInstr else
+  --                  '1' when s_ID_JumpReg else
+  --                  '1' when s_ID_and else
+  --                  '0';
+
+  s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
 
   g_PCMux: mux2t1_32b
     port map(i_d0 => s_IF_PCPlusFour,
