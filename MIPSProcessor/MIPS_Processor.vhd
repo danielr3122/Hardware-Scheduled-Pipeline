@@ -156,7 +156,9 @@ architecture structure of MIPS_Processor is
          i_MEM_Inst : in std_logic_vector(31 downto 0);
          i_WB_Inst  : in std_logic_vector(31 downto 0);
          
-         i_JumpInstr  : in std_logic;
+         i_JumpInstr    : in std_logic;
+         i_EX_JumpInstr : in std_logic;
+
          i_BranchSel  : in std_logic;
          i_JumpReg    : in std_logic;
          
@@ -304,6 +306,7 @@ architecture structure of MIPS_Processor is
          i_ID_nAdd_Sub          : in std_logic;
          i_ID_UnsignedSelect    : in std_logic;
          i_ID_RegWr             : in std_logic;
+         i_ID_JumpInstr         : in std_logic;
          i_ID_RegDest           : in std_logic_vector(1 downto 0);
          i_ID_Inst              : in std_logic_vector(31 downto 0);
          i_ID_extendedImm       : in std_logic_vector(31 downto 0);
@@ -315,6 +318,7 @@ architecture structure of MIPS_Processor is
          o_EX_DMemWr            : out std_logic;
          o_EX_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_EX_RegWr             : out std_logic;
+         o_EX_JumpInstr         : out std_logic;
          o_EX_readData1         : out std_logic_vector(31 downto 0);
          o_EX_readData2         : out std_logic_vector(31 downto 0);
          o_EX_extendedImm       : out std_logic_vector(31 downto 0);
@@ -469,6 +473,7 @@ architecture structure of MIPS_Processor is
   signal s_EX_Halt,
          s_EX_DMemWr,
          s_EX_RegWr,
+         s_EX_JumpInstr,
          s_EX_ALUsrc,
          s_EX_ALUslt,
          s_EX_nAdd_Sub,
@@ -605,7 +610,9 @@ begin
              i_MEM_Inst => s_MEM_Inst,
              i_WB_Inst  => s_WB_Inst,
                       
-             i_JumpInstr  => s_ID_JumpInstr,
+             i_JumpInstr    => s_ID_JumpInstr,
+             i_EX_JumpInstr => s_EX_JumpInstr,
+
              i_BranchSel  => s_ID_and,
              i_JumpReg    => s_ID_JumpReg,
                       
@@ -739,6 +746,7 @@ begin
              i_ID_nAdd_Sub       => s_ID_nAdd_Sub,
              i_ID_UnsignedSelect => s_ID_UnsignedSel,
              i_ID_RegWr          => s_ID_RegWr,
+             i_ID_JumpInstr      =, s_ID_JumpInstr,
              i_ID_RegDest        => s_ID_RegDest,
              i_ID_Inst           => s_ID_Inst,
              i_ID_extendedImm    => s_ID_extendedImm,
@@ -750,6 +758,7 @@ begin
              o_EX_DMemWr         => s_EX_DMemWr,
              o_EX_Write_Data_Sel => s_EX_Write_Data_Sel,
              o_EX_RegWr          => s_EX_RegWr,
+             o_EX_JumpInstr      => s_EX_JumpInstr,
              o_EX_readData1      => s_EX_readData1,
              o_EX_readData2      => s_EX_readData2,
              o_EX_extendedImm    => s_EX_extendedImm,

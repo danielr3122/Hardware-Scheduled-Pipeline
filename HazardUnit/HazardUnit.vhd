@@ -17,6 +17,8 @@ entity HazardUnit is
          i_WB_Inst  : in std_logic_vector(31 downto 0);
          
          i_JumpInstr  : in std_logic;
+         i_EX_JumpInstr  : in std_logic;
+
          i_BranchSel  : in std_logic;
          i_JumpReg    : in std_logic;
          
@@ -57,25 +59,22 @@ architecture structural of HazardUnit is
 
         o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
                       '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
-                      '0' when (i_JumpInstr = '1') else
+                      '0' when ((i_JumpInstr = '1') or (i_EX_JumpInstr = '1')) else
                       '1';
 
-        o_IF_ID_Stall  <= '0' when (i_JumpInstr = '1') else
-                          '1';
+        o_IF_ID_Stall  <= '1';
         o_ID_EX_Stall  <= '1';
         o_EX_MEM_Stall <= '1';
         o_MEM_WB_Stall <= '1';
 
         o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
-                      '1' when (i_JumpInstr = '1') else
+                      '1' when ((i_JumpInstr = '1') or (i_EX_JumpInstr = '1')) else
                       '1' when (i_BranchSel = '1') else
                       '1' when (i_JumpReg = '1') else
                       '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
                       '0';
 
-        o_IF_ID_Flush <= '1' when (i_JumpInstr = '1') else
-                         '0';
-
+        o_IF_ID_Flush <= '0';
         o_ID_EX_Flush  <= '0';
         o_EX_MEM_Flush <= '0';
         o_MEM_WB_Flush <= '0';

@@ -27,6 +27,7 @@ entity ID_EX_Register is
          i_ID_nAdd_Sub          : in std_logic;
          i_ID_UnsignedSelect    : in std_logic;
          i_ID_RegWr             : in std_logic;
+         i_ID_JumpInstr         : in std_logic;
          i_ID_RegDest           : in std_logic_vector(1 downto 0);
          i_ID_Inst              : in std_logic_vector(31 downto 0);
          i_ID_extendedImm       : in std_logic_vector(31 downto 0);
@@ -38,6 +39,7 @@ entity ID_EX_Register is
          o_EX_DMemWr            : out std_logic;
          o_EX_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_EX_RegWr             : out std_logic;
+         o_ID_JumpInstr         : out std_logic;
          o_EX_readData1         : out std_logic_vector(31 downto 0);
          o_EX_readData2         : out std_logic_vector(31 downto 0);
          o_EX_extendedImm       : out std_logic_vector(31 downto 0);
@@ -69,13 +71,15 @@ architecture structural of ID_EX_Register is
            it_ID_nAdd_Sub,
            it_ID_UnsignedSelect,
            it_ID_RegWr,
+           it_ID_JumpInstr,
            ot_EX_Halt,
            ot_EX_DMemWr,
            ot_EX_ALUsrc,
            ot_EX_ALUslt,
            ot_EX_nAdd_Sub,
            ot_EX_UnsignedSelect,
-           ot_EX_RegWr : std_logic_vector(0 downto 0);
+           ot_EX_RegWr 
+           ot_EX_JumpInstr : std_logic_vector(0 downto 0);
 
     begin
 
@@ -86,6 +90,7 @@ architecture structural of ID_EX_Register is
         it_ID_nAdd_Sub(0) <= i_ID_nAdd_Sub;
         it_ID_UnsignedSelect(0) <= i_ID_UnsignedSelect;
         it_ID_RegWr(0) <= i_ID_RegWr;
+        it_ID_JumpInstr(0) <= i_ID_JumpInstr;
         
         g_PCNext: register_N
             port map(
@@ -226,6 +231,15 @@ architecture structural of ID_EX_Register is
                 i_Data      => i_ID_readData2,
                 o_Data      => o_EX_readData2);
 
+        g_JumpInstr: register_N
+            generic map(N => 1)
+            port map(
+                i_Clock     => i_CLK,
+                i_Reset     => i_RST,
+                i_WriteEn   => i_WE,
+                i_Data      => it_ID_JumpInstr,
+                o_Data      => ot_EX_JumpInstr);
+
         o_EX_Halt <= ot_EX_Halt(0);
         o_EX_DMemWr <= ot_EX_DMemWr(0);
         o_EX_ALUsrc <= ot_EX_ALUsrc(0);
@@ -233,5 +247,6 @@ architecture structural of ID_EX_Register is
         o_EX_nAdd_Sub <= ot_EX_nAdd_Sub(0);
         o_EX_UnsignedSelect <= ot_EX_UnsignedSelect(0);
         o_EX_RegWr <= ot_EX_RegWr(0);
+        o_EX_JumpInstr <= ot_EX_JumpInstr(0);
 
 end structural;
