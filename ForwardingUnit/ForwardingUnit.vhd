@@ -104,11 +104,11 @@ architecture mixed of ForwardingUnit is
                      o_o  => eq4);
 
         --cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
-        cond1 <= '1' when (i_MEMRegWr = '1' and (not(eq1 = '1')) and eq2 = '1') else 
+        cond1 <= '1' when (i_MEM_RegWr = '1' and (not(eq1 = '1')) and eq2 = '1') else 
                  '0';
 
         --cond2 <= (i_WB_RegWr and (not eq3) and (not (i_MEM_RegWr and (not eq1) and eq2)) and eq4);
-        cond2 <= '1' when (i_WB_RegWr = '1' and (not(eq3 = '1')) and (not(i_MEMRegWr = '1' and (not(eq1 = '1')) and eq2 = '1')) and eq4 = '1') else
+        cond2 <= '1' when (i_WB_RegWr = '1' and (not(eq3 = '1')) and (not(i_MEM_RegWr = '1' and (not(eq1 = '1')) and eq2 = '1')) and eq4 = '1') else
                  '0';
         cat1 <= cond1 & cond2;
 
