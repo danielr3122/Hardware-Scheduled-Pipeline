@@ -703,12 +703,12 @@ begin
              i_s  => b"00",
              o_o  => s_ID_DataCompare2);
 
-  g_compare32: comparator_32
-    port map(i_d0 => s_ID_DataCompare1,
-             i_d1 => s_ID_DataCompare2,
-             o_o  => s_ID_sameData);
+  -- g_compare32: comparator_32
+  --   port map(i_d0 => s_ID_DataCompare1,
+  --            i_d1 => s_ID_DataCompare2,
+  --            o_o  => s_ID_sameData);
 
-  -- s_ID_sameData <= '1' when (s_ID_DataCompare1 = s_ID_DataCompare2) else '0';
+  s_ID_sameData <= '1' when (s_ID_DataCompare1 = s_ID_DataCompare2) else '0';
   s_ID_xor <= s_ID_sameData xor s_ID_BranchType;
   s_ID_and <= s_ID_xor and s_ID_BranchInstr;
 
