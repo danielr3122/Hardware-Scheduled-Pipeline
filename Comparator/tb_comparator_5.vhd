@@ -49,6 +49,11 @@ architecture mixed of tb_comparator_5 is
 
         wait for gCLK_HPER/2;
 
+        s_d0 <= b"10101";
+        s_d1 <= b"01010";
+
+        wait for gCLK_HPER/2;
+
     end process;
 
 end mixed;
