@@ -32,10 +32,16 @@ end ForwardingUnit;
 
 architecture structural of ForwardingUnit is
 
-    component comparator_5 is
-        port(i_d0 : in std_logic_vector(4 downto 0);
-             i_d1 : in std_logic_vector(4 downto 0);
-             o_o  : out std_logic);
+    --component comparator_5 is
+    --    port(i_d0 : in std_logic_vector(4 downto 0);
+    --         i_d1 : in std_logic_vector(4 downto 0);
+    --         o_o  : out std_logic);
+    --end component;
+
+    component gen_comparator_5 is 
+        port(i_d0   : in std_logic_vector(4 downto 0);
+             i_d1   : in std_logic_vector(4 downto 0);
+             o_o    : out std_logic);
     end component;
 
     --signal ID_Rs,
@@ -71,22 +77,22 @@ architecture structural of ForwardingUnit is
 
         -- MUX A Selector
 
-        g_c1: comparator_5
+        g_c1: gen_comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
                      i_d1 => b"00000",
                      o_o  => eq1);
         
-        g_c2: comparator_5
+        g_c2: gen_comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
                      i_d1 => i_EX_Inst(25 downto 21),
                      o_o  => eq2);
         
-        g_c3: comparator_5
+        g_c3: gen_comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
                      i_d1 => b"00000",
                      o_o  => eq3);
         
-        g_c4: comparator_5
+        g_c4: gen_comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
                      i_d1 => i_EX_Inst(25 downto 21),
                      o_o  => eq4);
@@ -102,12 +108,12 @@ architecture structural of ForwardingUnit is
 
         -- MUX B Selector
 
-        g_c5: comparator_5
+        g_c5: gen_comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
                      i_d1 => i_EX_Inst(20 downto 16),
                      o_o  => eq5);
 
-        g_c6: comparator_5
+        g_c6: gen_comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
                      i_d1 => i_EX_Inst(20 downto 16),
                      o_o  => eq6);
@@ -123,12 +129,12 @@ architecture structural of ForwardingUnit is
 
         -- MUX Read Data2 Selector
 
-        g_c7: comparator_5
+        g_c7: gen_comparator_5
         port map(i_d0 => i_EX_RegWrAddr,
                  i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq7);
 
-        g_c8: comparator_5
+        g_c8: gen_comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
                  i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq8);
@@ -144,12 +150,12 @@ architecture structural of ForwardingUnit is
 
         -- MUX Read Data1 Selector
 
-        g_c9: comparator_5
+        g_c9: gen_comparator_5
         port map(i_d0 => i_EX_RegWrAddr,
                  i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq9);
 
-        g_c10: comparator_5
+        g_c10: gen_comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
                  i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq10);
