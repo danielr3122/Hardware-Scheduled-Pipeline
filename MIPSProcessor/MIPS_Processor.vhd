@@ -584,7 +584,7 @@ begin
 
   g_PCNextMux: mux2t1_32b
     port map(i_d0 => s_IF_PCPlusFour,
-             i_d1 => x"0040_0000",
+             i_d1 => x"0000_0000",
              i_s  => s_IF_Flush,
              o_o  => s_IF_PCNext);
 
