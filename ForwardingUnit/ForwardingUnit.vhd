@@ -100,7 +100,7 @@ architecture structural of ForwardingUnit is
         -- o_muxASel <= (cond1 & cond2);
 
         with (cond1 & cond2) select
-            o_muxBSel <= "10" when b"10",
+            o_muxASel <= "10" when b"10",
                          "01" when b"01",
                          "00" when others;
 
@@ -126,10 +126,10 @@ architecture structural of ForwardingUnit is
 
         -- cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
 
-        with cond3 & cond4 select
-            o_muxBSel <= b"10" when b"10",
-                         b"01" when b"01",
-                         b"00" when others;
+        with (cond3 & cond4) select
+            o_muxBSel <= "10" when b"10",
+                         "01" when b"01",
+                         "00" when others;
 
         -- MUX Read Data2 Selector
 
