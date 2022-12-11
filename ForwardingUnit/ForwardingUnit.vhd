@@ -94,7 +94,7 @@ architecture structural of ForwardingUnit is
         cond2 <= (i_WB_RegWr and (not eq3) and (not (i_MEM_RegWr and (not eq1) and eq2)) and eq4);
 
         with (cond1 & cond2) select
-            o_muxASel <= "10" when b"10",
+            o_muxBSel <= "10" when b"10",
                          "01" when b"01",
                          "00" when others;
 
