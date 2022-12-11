@@ -746,7 +746,7 @@ begin
              i_ID_nAdd_Sub       => s_ID_nAdd_Sub,
              i_ID_UnsignedSelect => s_ID_UnsignedSel,
              i_ID_RegWr          => s_ID_RegWr,
-             i_ID_JumpInstr      =, s_ID_JumpInstr,
+             i_ID_JumpInstr      => s_ID_JumpInstr,
              i_ID_RegDest        => s_ID_RegDest,
              i_ID_Inst           => s_ID_Inst,
              i_ID_extendedImm    => s_ID_extendedImm,
