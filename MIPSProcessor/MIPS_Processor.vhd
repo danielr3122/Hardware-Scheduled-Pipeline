@@ -692,7 +692,7 @@ begin
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => s_muxReadData1Sel,
+             i_s  => b"00",
              o_o  => s_ID_DataCompare1);
 
   g_readData2Mux: mux4t1_32
@@ -700,7 +700,7 @@ begin
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => s_muxReadData2Sel,
+             i_s  => b"00",
              o_o  => s_ID_DataCompare2);
 
   g_compare32: comparator_32
@@ -777,31 +777,31 @@ begin
 ------ Execution Stage -----
 ----------------------------
 
-  g_ForwardingUnit: ForwardingUnit
-    port map(i_ID_Inst  => s_ID_Inst,
-             i_EX_Inst  => s_EX_Inst,
+  -- g_ForwardingUnit: ForwardingUnit
+  --   port map(i_ID_Inst  => s_ID_Inst,
+  --            i_EX_Inst  => s_EX_Inst,
                       
-             i_MEM_RegWr     => s_MEM_RegWr,
-             i_WB_RegWr      => s_RegWr,
+  --            i_MEM_RegWr     => s_MEM_RegWr,
+  --            i_WB_RegWr      => s_RegWr,
 
-             i_EX_RegWrAddr  => s_EX_RegWrAddr,
-             i_MEM_RegWrAddr => s_MEM_RegWrAddr,
-             i_WB_RegWrAddr  => s_RegWrAddr,
+  --            i_EX_RegWrAddr  => s_EX_RegWrAddr,
+  --            i_MEM_RegWrAddr => s_MEM_RegWrAddr,
+  --            i_WB_RegWrAddr  => s_RegWrAddr,
 
-             i_BranchSel     => s_ID_and,
+  --            i_BranchSel     => s_ID_and,
 
-             o_muxASel => s_muxASel,
-             o_muxBSel => s_muxBSel,
+  --            o_muxASel => s_muxASel,
+  --            o_muxBSel => s_muxBSel,
 
-             o_muxReadData1Sel => s_muxReadData1Sel,
-             o_muxReadData2Sel => s_muxReadData2Sel);
+  --            o_muxReadData1Sel => s_muxReadData1Sel,
+  --            o_muxReadData2Sel => s_muxReadData2Sel);
 
   g_muxA: mux4t1_32
     port map(i_d0 => s_EX_readData1,
              i_d1 => s_RegWrData,
              i_d2 => s_MEM_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => s_muxASel,
+             i_s  => b"00",
              o_o  => s_EX_OpDataA);
 
   g_muxB: mux4t1_32
@@ -809,7 +809,7 @@ begin
              i_d1 => s_RegWrData,
              i_d2 => s_MEM_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => s_muxBSel,
+             i_s  => b"00",
              o_o  => s_EX_OpDataB);
 
   g_ALUsrcMux: mux2t1_32b
