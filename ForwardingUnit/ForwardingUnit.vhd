@@ -30,7 +30,7 @@ entity ForwardingUnit is
          o_muxReadData2Sel : out std_logic_vector(1 downto 0)); 
 end ForwardingUnit;
 
-architecture structural of ForwardingUnit is
+architecture mixed of ForwardingUnit is
 
     --component comparator_5 is
     --    port(i_d0 : in std_logic_vector(4 downto 0);
@@ -169,4 +169,4 @@ architecture structural of ForwardingUnit is
                                  b"01" when b"01",
                                  b"00" when others;
 
-end structural;
+end mixed;
