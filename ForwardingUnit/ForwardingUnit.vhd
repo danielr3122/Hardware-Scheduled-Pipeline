@@ -69,8 +69,6 @@ architecture structural of ForwardingUnit is
 
         -- MUX A Selector
 
-        -- cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
-        
         g_c1: comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
                      i_d1 => b"00000",
@@ -82,8 +80,6 @@ architecture structural of ForwardingUnit is
                      o_o  => eq2);
 
         cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
-
-        -- cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
         
         g_c3: comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
@@ -95,9 +91,7 @@ architecture structural of ForwardingUnit is
                      i_d1 => EX_Rs,
                      o_o  => eq4);
 
-        cond2 <= (i_WB_RegWr and (not eq3) and (not cond1) and eq4);
-
-        -- o_muxASel <= (cond1 & cond2);
+        cond2 <= (i_WB_RegWr and (not eq3) and (not (i_MEM_RegWr and (not eq1) and eq2)) and eq4);
 
         with (cond1 & cond2) select
             o_muxASel <= "10" when b"10",
@@ -118,13 +112,7 @@ architecture structural of ForwardingUnit is
 
         cond3 <= (i_MEM_RegWr and (not eq1) and eq5);
 
-        -- cond3 <= ((i_MEM_RegWr = '1')  and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt));
-
         cond4 <= (i_WB_RegWr and (not eq3) and (not cond3) and eq6);
-
-        -- o_muxBSel <= cond3 & cond4;
-
-        -- cond4 <= ((i_WB_RegWr = '1')  and  (i_WB_RegWrAddr /= "00000") and (not(cond3))  and (i_WB_RegWrAddr = EX_Rt));
 
         with (cond3 & cond4) select
             o_muxBSel <= "10" when b"10",
@@ -140,18 +128,12 @@ architecture structural of ForwardingUnit is
 
         cond5 <= (i_BranchSel and eq7);
 
-        -- cond5 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rt));
-
         g_c8: comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
                  i_d1 => ID_Rt,
                  o_o  => eq8);
 
         cond6 <= (i_BranchSel and eq8);
-
-        -- o_muxReadData2Sel <= (cond5 & cond6);
-
-        -- cond6 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rt));
 
         with cond5 & cond6 select
             o_muxReadData2Sel <= b"10" when b"10",
@@ -167,8 +149,6 @@ architecture structural of ForwardingUnit is
 
         cond7 <= (i_BranchSel and eq9);
 
-        -- cond7 <= ((i_BranchSel = '1') and (i_EX_RegWrAddr = ID_Rs));
-
         g_c10: comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
                  i_d1 => ID_Rs,
@@ -176,48 +156,9 @@ architecture structural of ForwardingUnit is
 
         cond8 <= (i_BranchSel and eq10);
 
-        -- o_muxReadData1Sel <= (cond7 & cond8);
-
-        -- cond8 <= ((i_BranchSel = '1') and (i_MEM_RegWrAddr = ID_Rs));
-
         with cond7 & cond8 select
             o_muxReadData1Sel <= b"10" when b"10",
                                  b"01" when b"01",
                                  b"00" when others;
 
-        -- process(EX_Rs, EX_Rt, i_MEM_RegWr, i_WB_RegWr, i_MEM_RegWrAddr, i_WB_RegWrAddr, ID_Rs, ID_Rt, i_BranchSel) is
-            
-            -- begin
-
-                -- o_muxASel <= b"00";
-                -- o_muxBSel <= b"00";
-                -- o_muxReadData1Sel <= b"00";
-                -- o_muxReadData2Sel <= b"00";
-
-                -- if(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rs) then
-                --     o_muxASel <= "10";
-                -- elsif(i_WB_RegWr = '1'  and (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr = '1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs))  and i_WB_RegWrAddr = EX_Rs) then
-                --     o_muxASel <= "01";
-                -- end if;
-
-                -- if(i_MEM_RegWr = '1'  and (i_MEM_RegWrAddr /= "00000") and i_MEM_RegWrAddr = EX_Rt) then
-                --     o_muxBSel <= "10";
-                -- elsif(i_WB_RegWr = '1'  and  (i_WB_RegWrAddr /= "00000") and not(i_MEM_RegWr ='1' and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rt))  and i_WB_RegWrAddr = EX_Rt) then
-                --     o_muxBSel <= "01";
-                -- end if;
-
-                -- if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rt)) then
-                --     o_muxReadData2Sel <= "10";
-                -- elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rt)) then
-                --     o_muxReadData2Sel <= "01";
-                -- end if;
-
-                -- if(i_BranchSel = '1' and (i_EX_RegWrAddr = ID_Rs)) then
-                --     o_muxReadData1Sel <= "10";
-                -- elsif(i_BranchSel = '1' and (i_MEM_RegWrAddr = ID_Rs)) then
-                --     o_muxReadData1Sel <= "01";
-                -- end if;
-
-        -- end process;
-        
 end structural;
