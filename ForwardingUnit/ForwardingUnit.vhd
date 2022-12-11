@@ -46,7 +46,7 @@ architecture structural of ForwardingUnit is
            cond7,
            cond8 : std_logic;
 
-    signal test : std_logic_vector(4 downto 0);
+    signal test : std_logic;
 
     begin
 
