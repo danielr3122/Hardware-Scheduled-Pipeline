@@ -152,28 +152,29 @@ architecture structure of MIPS_Processor is
 
   component HazardUnit is
     port(i_ID_Inst  : in std_logic_vector(31 downto 0);
-        i_EX_Inst  : in std_logic_vector(31 downto 0);
-        i_MEM_Inst : in std_logic_vector(31 downto 0);
-        i_WB_Inst  : in std_logic_vector(31 downto 0);
-        
-        i_JumpInstr  : in std_logic;
-        i_BranchSel  : in std_logic;
-        i_JumpReg    : in std_logic;
-        
-        i_EX_jal  : in std_logic;
-        i_MEM_jal : in std_logic;
-        i_WB_jal  : in std_logic;
-        
-        o_PC_Stall     : out std_logic;
-        o_IF_ID_Stall  : out std_logic;
-        o_ID_EX_Stall  : out std_logic;
-        o_EX_MEM_Stall : out std_logic;
-        o_MEM_WB_Stall : out std_logic;
-        
-        o_IF_Flush     : out std_logic;
-        o_ID_EX_Flush  : out std_logic;
-        o_EX_MEM_Flush : out std_logic;
-        o_MEM_WB_Flush : out std_logic); 
+         i_EX_Inst  : in std_logic_vector(31 downto 0);
+         i_MEM_Inst : in std_logic_vector(31 downto 0);
+         i_WB_Inst  : in std_logic_vector(31 downto 0);
+         
+         i_JumpInstr  : in std_logic;
+         i_BranchSel  : in std_logic;
+         i_JumpReg    : in std_logic;
+         
+         i_EX_jal  : in std_logic;
+         i_MEM_jal : in std_logic;
+         i_WB_jal  : in std_logic;
+         
+         o_PC_Stall     : out std_logic;
+         o_IF_ID_Stall  : out std_logic;
+         o_ID_EX_Stall  : out std_logic;
+         o_EX_MEM_Stall : out std_logic;
+         o_MEM_WB_Stall : out std_logic;
+         
+         o_IF_Flush     : out std_logic;
+         o_IF_ID_Flush  : out std_logic;
+         o_ID_EX_Flush  : out std_logic;
+         o_EX_MEM_Flush : out std_logic;
+         o_MEM_WB_Flush : out std_logic); 
   end component;
 
   ----------------------------
@@ -399,7 +400,9 @@ architecture structure of MIPS_Processor is
   signal s_IF_pcSelect,
          s_PC_Stall,
          s_IF_Flush,
-         s_IF_ID_Stall : std_logic;
+         s_IF_ID_Flush,
+         s_IF_ID_Stall,
+         s_IF_ID_RST : std_logic;
 
   -------------------------------------
   ---------- Decode Signals -----------
@@ -581,9 +584,11 @@ begin
              i_s  => s_IF_Flush,
              o_o  => s_IF_Inst);
 
+  s_IF_ID_RST <= (iRST or s_IF_ID_Flush);
+
   g_IF_ID: IF_ID_Register
     port map(i_CLK       => iCLK,
-             i_RST       => iRST,
+             i_RST       => s_IF_ID_RST,
              i_WE        => s_IF_ID_Stall,
              i_IF_Inst   => s_IF_Inst,
              i_IF_PCNext => s_IF_PCNext,
@@ -615,6 +620,7 @@ begin
              o_MEM_WB_Stall => s_MEM_WB_Stall,
                       
              o_IF_Flush     => s_IF_Flush,
+             o_IF_ID_Flush  => s_IF_ID_Flush,
              o_ID_EX_Flush  => s_ID_EX_Flush,
              o_EX_MEM_Flush => s_EX_MEM_Flush,
              o_MEM_WB_Flush => s_MEM_WB_Flush);
