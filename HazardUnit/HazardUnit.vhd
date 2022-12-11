@@ -59,16 +59,17 @@ architecture structural of HazardUnit is
         --bInstr <= '1' when (i_ID_Inst(31 downto 26) = "000100" or 
         --                    i_ID_Inst(31 downto 26) = "000101") else
         --          '0';
-        --
-        --jInstr <= '1' when (i_ID_Inst(31 downto 26) = "000010") else
-        --          '0'; 
+        
+        jInstr <= '1' when (i_ID_Inst(31 downto 26) = "000010") else
+                  '0'; 
 --
-        --jrInstr <= '1' when (i_ID_Inst(31 downto 26) & i_ID_Inst(5 downto 0) = "000000001000") else
-        --           '0';
+        jrInstr <= '1' when (i_ID_Inst(31 downto 26) & i_ID_Inst(5 downto 0) = "000000001000") else
+                   '0';
 
         --o_PC_Stall <= '1';
         o_PC_Stall <= '0' when (lw = '1' or sw = '1') else
                       '0' when (i_JumpInstr = '1' and jInstr = '1') else 
+                      '0' when (i_JumpReg = '1'and jrInstr = '1') else
                       '0' when (i_EX_jal = '1' or i_MEM_jal = '1' or i_WB_jal = '1') else
                       '1';
 --
