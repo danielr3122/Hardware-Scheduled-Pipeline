@@ -174,7 +174,7 @@ architecture behavior of tb_pipeline is
            so_WB_Ovfl, so_WB_RegWr : std_logic;
 
     signal si_MEM_PCNext, si_MEM_DMemOut, si_MEM_ALUout, si_MEM_Inst,
-           so_WB_ALUout, so_WB_DMemOut, so_WB_PCNext, so_WB_RegWr : std_logic_vector(31 downto 0);
+           so_WB_ALUout, so_WB_DMemOut, so_WB_PCNext, so_WB_Inst : std_logic_vector(31 downto 0);
 
     signal si_MEM_Write_Data_Sel, si_MEM_RegDest, so_WB_Write_Data_Sel, so_WB_RegDest : std_logic_vector(1 downto 0);
 
@@ -260,7 +260,7 @@ begin
         DUT3: MEM_WB_Register
             port map(i_CLK                => iCLK,
                      i_RST                => (si_MEM_RST or si_MEM_Flush),
-                     i_WE                 => (si_MEM_WB or si_MEM_Stall),
+                     i_WE                 => (si_MEM_WE or si_MEM_Stall),
                      i_MEM_PCNext         => so_MEM_PCNext,
                      i_MEM_Halt           => so_MEM_Halt,
                      i_MEM_Write_Data_Sel => so_MEM_Write_Data_Sel,
