@@ -19,6 +19,8 @@ entity tb_comparator_5 is
 end tb_comparator_5;
 
 architecture mixed of tb_comparator_5 is
+  
+    constant cCLK_PER  : time := gCLK_HPER * 2;
 
     component comparator_5 is
         port(i_d0 : in std_logic_vector(4 downto 0);
@@ -39,20 +41,20 @@ architecture mixed of tb_comparator_5 is
             begin
                 wait for gCLK_HPER/2;
 
-        s_d0 <= b"00000";
-        s_d1 <= b"00000";
+            s_d0 <= b"00000";
+            s_d1 <= b"00000";
 
-        wait for gCLK_HPER/2;
+            wait for gCLK_HPER/2;
 
-        s_d0 <= b"00001";
-        s_d1 <= b"00000";
+            s_d0 <= b"00001";
+            s_d1 <= b"00000";
 
-        wait for gCLK_HPER/2;
+            wait for gCLK_HPER/2;
 
-        s_d0 <= b"10101";
-        s_d1 <= b"01010";
+            s_d0 <= b"10101";
+            s_d1 <= b"01010";
 
-        wait for gCLK_HPER/2;
+            wait for gCLK_HPER/2;
 
     end process;
 
