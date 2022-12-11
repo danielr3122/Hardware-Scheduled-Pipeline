@@ -30,7 +30,7 @@ architecture mixed of tb_gen_comparator_5 is
     signal s_o : std_logic;
     
     begin
-        DUT0: comparator_5
+        DUT0: gen_comparator_5
         port map(i_d0 => s_d0,
                  i_d1 => s_d1,
                  o_o  => s_o);
