@@ -102,9 +102,15 @@ architecture structure of MIPS_Processor is
            o_o        : out std_logic_vector(N-1 downto 0));
   end component;
 
-  component comparator_32 is
-    port(i_d0 : in std_logic_vector(31 downto 0);
-         i_d1 : in std_logic_vector(31 downto 0);
+  --component comparator_32 is
+  --  port(i_d0 : in std_logic_vector(31 downto 0);
+  --       i_d1 : in std_logic_vector(31 downto 0);
+  --       o_o  : out std_logic);
+  --end component;
+
+  component gen_comparator_32 is
+    port(i_d0 : in std_logic_vector(N-1 downto 0);
+         i_d1 : in std_logic_vector(N-1 downto 0);
          o_o  : out std_logic);
   end component;
   
@@ -697,7 +703,12 @@ begin
              i_s  => s_muxReadData2Sel,
              o_o  => s_ID_DataCompare2);
 
-  g_compare32: comparator_32
+  --g_compare32: comparator_32
+  --  port map(i_d0 => s_ID_DataCompare1,
+  --           i_d1 => s_ID_DataCompare2,
+  --           o_o  => s_ID_sameData);
+
+  g_gen_compare32: gen_comparator_32
     port map(i_d0 => s_ID_DataCompare1,
              i_d1 => s_ID_DataCompare2,
              o_o  => s_ID_sameData);
