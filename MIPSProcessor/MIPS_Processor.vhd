@@ -591,7 +591,7 @@ begin
   g_InstMux: mux2t1_32b
     port map(i_d0 => s_Inst,
              i_d1 => x"0000_0000",
-             i_s  => '0', --s_IF_Flush,
+             i_s  => s_IF_Flush,
              o_o  => s_IF_Inst);
 
   g_IF_ID: IF_ID_Register
