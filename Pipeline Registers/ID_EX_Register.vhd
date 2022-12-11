@@ -39,7 +39,7 @@ entity ID_EX_Register is
          o_EX_DMemWr            : out std_logic;
          o_EX_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_EX_RegWr             : out std_logic;
-         o_ID_JumpInstr         : out std_logic;
+         o_EX_JumpInstr         : out std_logic;
          o_EX_readData1         : out std_logic_vector(31 downto 0);
          o_EX_readData2         : out std_logic_vector(31 downto 0);
          o_EX_extendedImm       : out std_logic_vector(31 downto 0);
