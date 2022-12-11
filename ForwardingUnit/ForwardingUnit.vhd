@@ -63,7 +63,10 @@ architecture structural of ForwardingUnit is
 
         -- cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
 
-        cond1 <= i_MEM_RegWr and '0';
+        cond1 <= i_MEM_RegWrAddr /= "00000";
+
+        -- cond1 <= i_MEM_RegWr and (i_MEM_RegWrAddr(0) or i_MEM_RegWrAddr(1) or i_MEM_RegWrAddr(2) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)) and
+        --          (not(((i_MEM_RegWrAddr(0) xor EX_Rs(0)) or (i_MEM_RegWrAddr(1) xor EX_Rs(1)) or (i_MEM_RegWrAddr(2) xor EX_Rs(2)) or i_MEM_RegWrAddr(3) or i_MEM_RegWrAddr(4)))));
 
         cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
 
