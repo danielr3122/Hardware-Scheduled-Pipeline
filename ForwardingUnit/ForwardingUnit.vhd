@@ -62,7 +62,13 @@ architecture mixed of ForwardingUnit is
 
     signal cat1, cat2, cat3, cat4 : std_logic_vector(1 downto 0);
 
+    signal bInstr : std_logic;
+
     begin
+
+        bInstr <= '1' when (i_ID_Inst(31 downto 26) = "000100" or 
+                            i_ID_Inst(31 downto 26) = "000101") else
+                  '0';
 
         --ID_Rs <= i_ID_Inst(25 downto 21);
         --ID_Rt <= i_ID_Inst(20 downto 16);
@@ -139,8 +145,8 @@ architecture mixed of ForwardingUnit is
                  i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq8);
 
-        cond5 <= (i_BranchSel and eq7);
-        cond6 <= (i_BranchSel and eq8);
+        cond5 <= (i_BranchSel = '1' and bInstr = '1' and eq7);
+        cond6 <= (i_BranchSel = '1' and bInstr = '1' and eq8);
         cat3 <= cond5 & cond6;
 
         with cat3 select
@@ -160,8 +166,8 @@ architecture mixed of ForwardingUnit is
                  i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq10);
 
-        cond7 <= (i_BranchSel and eq9);
-        cond8 <= (i_BranchSel and eq10);
+        cond7 <= (i_BranchSel = '1' and bInstr = '1' and eq9);
+        cond8 <= (i_BranchSel = '1' and bInstr = '1' and eq10);
         cat4 <= cond7 & cond8;
 
         with cat4 select

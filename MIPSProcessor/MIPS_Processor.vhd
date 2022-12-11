@@ -793,7 +793,7 @@ begin
              i_MEM_RegWrAddr => s_MEM_RegWrAddr,
              i_WB_RegWrAddr  => s_RegWrAddr,
 
-             i_BranchSel     => s_ID_and,
+             i_BranchSel     => s_ID_BranchInstr,
 
              o_muxASel => s_muxASel,
              o_muxBSel => s_muxBSel,
