@@ -72,14 +72,14 @@ architecture structural of ForwardingUnit is
         -- cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
         
         g_c1: comparator_5
-            port map(i_d0 <= i_MEM_RegWrAddr,
-                     i_d1 <= b"00000",
-                     o_o  <= eq1);
+            port map(i_d0 => i_MEM_RegWrAddr,
+                     i_d1 => b"00000",
+                     o_o  => eq1);
         
         g_c2: comparator_5
-            port map(i_d0 <= i_MEM_RegWrAddr,
-                     i_d1 <= EX_Rs,
-                     o_o  <= eq2);
+            port map(i_d0 => i_MEM_RegWrAddr,
+                     i_d1 => EX_Rs,
+                     o_o  => eq2);
 
         cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
 
