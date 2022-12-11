@@ -17,7 +17,7 @@ entity gen_comparator_32 is
          o_o  : out std_logic);
 end gen_comparator_32;
 
-architecture mixed of comparator_32 is   
+architecture mixed of gen_comparator_32 is   
 
     component xorg_N
     generic(N : integer := 32);

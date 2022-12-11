@@ -16,7 +16,7 @@ entity gen_comparator_5 is
          o_o  : out std_logic);
 end gen_comparator_5;
 
-architecture mixed of comparator_5 is   
+architecture mixed of gen_comparator_5 is   
 
     component xorg_N
     generic(N : integer := 5);
