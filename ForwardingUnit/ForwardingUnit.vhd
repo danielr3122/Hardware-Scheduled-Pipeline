@@ -61,10 +61,10 @@ architecture structural of ForwardingUnit is
         EX_Rs <= i_EX_Inst(25 downto 21);
         EX_Rt <= i_EX_Inst(20 downto 16);
 
-        o_muxASel <= b"00";
-        o_muxBSel <= b"00";
-        o_muxReadData1Sel <= b"00";
-        o_muxReadData2Sel <= b"00";
+        -- o_muxASel <= b"00";
+        -- o_muxBSel <= b"00";
+        -- o_muxReadData1Sel <= b"00";
+        -- o_muxReadData2Sel <= b"00";
 
 
         -- MUX A Selector
