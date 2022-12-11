@@ -38,10 +38,10 @@ architecture structural of ForwardingUnit is
              o_o  : out std_logic);
     end component;
 
-    signal ID_Rs,
-           ID_Rt,
-           EX_Rs,
-           EX_Rt : std_logic_vector(4 downto 0);
+    --signal ID_Rs,
+    --       ID_Rt,
+    --       EX_Rs,
+    --       EX_Rt : std_logic_vector(4 downto 0);
 
     signal cond1,
            cond2,
@@ -58,10 +58,10 @@ architecture structural of ForwardingUnit is
 
     begin
 
-        ID_Rs <= i_ID_Inst(25 downto 21);
-        ID_Rt <= i_ID_Inst(20 downto 16);
-        EX_Rs <= i_EX_Inst(25 downto 21);
-        EX_Rt <= i_EX_Inst(20 downto 16);
+        --ID_Rs <= i_ID_Inst(25 downto 21);
+        --ID_Rt <= i_ID_Inst(20 downto 16);
+        --EX_Rs <= i_EX_Inst(25 downto 21);
+        --EX_Rt <= i_EX_Inst(20 downto 16);
 
         -- o_muxASel <= b"00";
         -- o_muxBSel <= b"00";
@@ -78,10 +78,8 @@ architecture structural of ForwardingUnit is
         
         g_c2: comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
-                     i_d1 => EX_Rs,
+                     i_d1 => i_EX_Inst(25 downto 21),
                      o_o  => eq2);
-
-        cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
         
         g_c3: comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
@@ -90,11 +88,13 @@ architecture structural of ForwardingUnit is
         
         g_c4: comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
-                     i_d1 => EX_Rs,
+                     i_d1 => i_EX_Inst(25 downto 21),
                      o_o  => eq4);
 
+        cond1 <= (i_MEM_RegWr and (not eq1) and eq2);
         cond2 <= (i_WB_RegWr and (not eq3) and (not (i_MEM_RegWr and (not eq1) and eq2)) and eq4);
         cat1 <= cond1 & cond2;
+
         with cat1 select
             o_muxASel <= "10" when b"10",
                          "01" when b"01",
@@ -104,19 +104,18 @@ architecture structural of ForwardingUnit is
 
         g_c5: comparator_5
             port map(i_d0 => i_MEM_RegWrAddr,
-                     i_d1 => EX_Rt,
+                     i_d1 => i_EX_Inst(20 downto 16),
                      o_o  => eq5);
 
         g_c6: comparator_5
             port map(i_d0 => i_WB_RegWrAddr,
-                     i_d1 => EX_Rt,
+                     i_d1 => i_EX_Inst(20 downto 16),
                      o_o  => eq6);
 
         cond3 <= (i_MEM_RegWr and (not eq1) and eq5);
-
         cond4 <= (i_WB_RegWr and (not eq3) and (not cond3) and eq6);
-
         cat2 <= cond3 & cond4;
+
         with cat2 select
             o_muxBSel <= "10" when b"10",
                          "01" when b"01",
@@ -126,19 +125,18 @@ architecture structural of ForwardingUnit is
 
         g_c7: comparator_5
         port map(i_d0 => i_EX_RegWrAddr,
-                 i_d1 => ID_Rt,
+                 i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq7);
-
-        cond5 <= (i_BranchSel and eq7);
 
         g_c8: comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
-                 i_d1 => ID_Rt,
+                 i_d1 => i_ID_Inst(20 downto 16),
                  o_o  => eq8);
 
+        cond5 <= (i_BranchSel and eq7);
         cond6 <= (i_BranchSel and eq8);
-
         cat3 <= cond5 & cond6;
+
         with cat3 select
             o_muxReadData2Sel <= b"10" when b"10",
                                  b"01" when b"01",
@@ -148,19 +146,18 @@ architecture structural of ForwardingUnit is
 
         g_c9: comparator_5
         port map(i_d0 => i_EX_RegWrAddr,
-                 i_d1 => ID_Rs,
+                 i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq9);
-
-        cond7 <= (i_BranchSel and eq9);
 
         g_c10: comparator_5
         port map(i_d0 => i_MEM_RegWrAddr,
-                 i_d1 => ID_Rs,
+                 i_d1 => i_ID_Inst(25 downto 21),
                  o_o  => eq10);
 
+        cond7 <= (i_BranchSel and eq9);
         cond8 <= (i_BranchSel and eq10);
-        
         cat4 <= cond7 & cond8;
+
         with cat4 select
             o_muxReadData1Sel <= b"10" when b"10",
                                  b"01" when b"01",
