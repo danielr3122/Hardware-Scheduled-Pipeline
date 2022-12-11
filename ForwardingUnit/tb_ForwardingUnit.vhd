@@ -110,40 +110,44 @@ architecture mixed of tb_ForwardingUnit is
             wait for gCLK_HPER*2;
 
             -- Test case 2:
-            s_ID_Inst       <= x"0020_0000";
-            s_EX_Inst       <= x"0020_0000";
-            s_MEM_RegWr     <= '0';
-            s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= b"00001";
-            s_MEM_RegWrAddr <= b"00001";
-            s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '1';
-
-            -- o_muxReadData1Sel should equal 10
-
-            wait for gCLK_HPER*2;
-
-            -- Test case 3: ReadData1Sel should get 1
-            s_ID_Inst       <= x"0021_0000";
+            s_ID_Inst       <= x"0000_0000";
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= b"00001";
-            s_MEM_RegWrAddr <= b"00001";
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
             s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '1';
+            s_BranchSel     <= '0';
+
+            -- o_muxASel should equal 00
+
+            wait for gCLK_HPER*2;
+
+            -- Test case 3: 
+            s_ID_Inst       <= x"0000_0000";
+            s_EX_Inst       <= x"0020_0000";
+            s_MEM_RegWr     <= '0';
+            s_WB_RegWr      <= '1';
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00001";
+            s_BranchSel     <= '0';
+
+            -- o_muxBSel should equal 01
 
             wait for gCLK_HPER*2;
 
             -- Test case 4: ReadData2Sel should get 1
-            s_ID_Inst       <= x"0021_0000";
-            s_EX_Inst       <= x"0000_0000";
-            s_MEM_RegWr     <= '0';
+            s_ID_Inst       <= x"0000_0000";
+            s_EX_Inst       <= x"0020_0000";
+            s_MEM_RegWr     <= '1';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= b"00001";
+            s_EX_RegWrAddr  <= b"00000";
             s_MEM_RegWrAddr <= b"00001";
             s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '1';
+            s_BranchSel     <= '0';
+
+            -- o_muxBSel should equal 10
 
             wait for gCLK_HPER*2;
 
@@ -156,6 +160,8 @@ architecture mixed of tb_ForwardingUnit is
             s_MEM_RegWrAddr <= b"00000";
             s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
+
+            -- o_muxBSel should equal 00
 
             wait for gCLK_HPER*2;
 
