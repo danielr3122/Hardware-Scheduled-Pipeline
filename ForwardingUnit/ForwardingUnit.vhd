@@ -46,6 +46,8 @@ architecture structural of ForwardingUnit is
            cond7,
            cond8 : std_logic;
 
+    signal test : std_logic_vector(4 downto 0);
+
     begin
 
         ID_Rs <= i_ID_Inst(25 downto 21);
@@ -61,11 +63,9 @@ architecture structural of ForwardingUnit is
 
         -- MUX A Selector
 
-        -- cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
+        test <= i_MEM_RegWrAddr /= "00000";
 
-        cond1 <= i_MEM_RegWr = '1';
-        cond1 <= i_MEM_RegWrAddr /= "00000";
-        cond1 <= i_MEM_RegWrAddr = EX_Rs;
+        cond1 <= ((i_MEM_RegWr = '1') and (i_MEM_RegWrAddr /= "00000") and (i_MEM_RegWrAddr = EX_Rs));
 
         cond2 <= ((i_WB_RegWr = '1')  and (i_WB_RegWrAddr /= "00000") and (not(cond1))  and (i_WB_RegWrAddr = EX_Rs));
 
