@@ -175,29 +175,35 @@ architecture mixed of tb_ForwardingUnit is
             s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
 
+            -- o_muxReadData1Sel should equal 00
+
             wait for gCLK_HPER*2;
 
             -- Test case 7:
-            s_ID_Inst       <= x"0000_0000";
+            s_ID_Inst       <= x"0020_0000";
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
             s_EX_RegWrAddr  <= b"00000";
-            s_MEM_RegWrAddr <= b"00000";
+            s_MEM_RegWrAddr <= b"00001";
             s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '0';
+            s_BranchSel     <= '1';
+
+            -- o_muxReadData1Sel should equal 01
 
             wait for gCLK_HPER*2;
 
             -- Test case 8:
-            s_ID_Inst       <= x"0000_0000";
+            s_ID_Inst       <= x"0020_0000";
             s_EX_Inst       <= x"0000_0000";
             s_MEM_RegWr     <= '0';
             s_WB_RegWr      <= '0';
-            s_EX_RegWrAddr  <= b"00000";
+            s_EX_RegWrAddr  <= b"00001";
             s_MEM_RegWrAddr <= b"00000";
             s_WB_RegWrAddr  <= b"00000";
-            s_BranchSel     <= '0';
+            s_BranchSel     <= '1';
+
+            -- o_muxReadData1Sel should equal 10
 
             wait for gCLK_HPER*2;
 
@@ -210,6 +216,36 @@ architecture mixed of tb_ForwardingUnit is
             s_MEM_RegWrAddr <= b"00000";
             s_WB_RegWrAddr  <= b"00000";
             s_BranchSel     <= '0';
+
+            -- o_muxReadData2Sel should equal 00
+
+            wait for gCLK_HPER*2;
+
+            -- Test case 10:
+            s_ID_Inst       <= x"0001_0000";
+            s_EX_Inst       <= x"0000_0000";
+            s_MEM_RegWr     <= '0';
+            s_WB_RegWr      <= '0';
+            s_EX_RegWrAddr  <= b"00000";
+            s_MEM_RegWrAddr <= b"00001";
+            s_WB_RegWrAddr  <= b"00000";
+            s_BranchSel     <= '1';
+
+            -- o_muxReadData2Sel should equal 01
+
+            wait for gCLK_HPER*2;
+
+            -- Test case 10:
+            s_ID_Inst       <= x"0001_0000";
+            s_EX_Inst       <= x"0000_0000";
+            s_MEM_RegWr     <= '0';
+            s_WB_RegWr      <= '0';
+            s_EX_RegWrAddr  <= b"00001";
+            s_MEM_RegWrAddr <= b"00000";
+            s_WB_RegWrAddr  <= b"00000";
+            s_BranchSel     <= '1';
+
+            -- o_muxReadData2Sel should equal 10
 
             wait for gCLK_HPER*2;
     end process;
