@@ -135,7 +135,7 @@ architecture structural of ForwardingUnit is
 
         cond6 <= (i_BranchSel and eq8);
 
-        with cond5 & cond6 select
+        with (cond5 & cond6) select
             o_muxReadData2Sel <= b"10" when b"10",
                                  b"01" when b"01",
                                  b"00" when others;
@@ -156,7 +156,7 @@ architecture structural of ForwardingUnit is
 
         cond8 <= (i_BranchSel and eq10);
 
-        with cond7 & cond8 select
+        with (cond7 & cond8) select
             o_muxReadData1Sel <= b"10" when b"10",
                                  b"01" when b"01",
                                  b"00" when others;
