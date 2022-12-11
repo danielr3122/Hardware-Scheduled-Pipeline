@@ -52,7 +52,7 @@ architecture structural of ForwardingUnit is
            cond7,
            cond8 : std_logic;
 
-    signal eq1, eq2, eq3, eq4 : std_logic;
+    signal eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8, eq9, eq10 : std_logic;
 
     begin
 
