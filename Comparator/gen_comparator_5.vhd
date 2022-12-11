@@ -39,7 +39,7 @@ architecture mixed of gen_comparator_5 is
                      i_B   => i_d1,
                      o_F   => ResX);
 
-        g_checkZ: checkZero_32
+        g_checkZ: checkZero_5
             port map(i_d   => ResX,
                      o_f   => o_o);
 
