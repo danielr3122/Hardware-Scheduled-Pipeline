@@ -102,11 +102,11 @@ architecture structure of MIPS_Processor is
            o_o        : out std_logic_vector(N-1 downto 0));
   end component;
 
-  -- component comparator_32 is
-  --   port(i_d0 : in std_logic_vector(31 downto 0);
-  --        i_d1 : in std_logic_vector(31 downto 0);
-  --        o_o  : out std_logic);
-  -- end component;
+  component comparator_32 is
+    port(i_d0 : in std_logic_vector(31 downto 0);
+         i_d1 : in std_logic_vector(31 downto 0);
+         o_o  : out std_logic);
+  end component;
   
   -------------------------
   ----- PC Addressing -----
@@ -173,7 +173,6 @@ architecture structure of MIPS_Processor is
          o_MEM_WB_Stall : out std_logic;
          
          o_IF_Flush     : out std_logic;
-         o_IF_ID_Flush  : out std_logic;
          o_ID_EX_Flush  : out std_logic;
          o_EX_MEM_Flush : out std_logic;
          o_MEM_WB_Flush : out std_logic); 
@@ -183,25 +182,25 @@ architecture structure of MIPS_Processor is
   ------ Forwarding Unit -----
   ----------------------------
 
-  -- component ForwardingUnit is
-  --   port(i_ID_Inst  : in std_logic_vector(31 downto 0);
-  --        i_EX_Inst  : in std_logic_vector(31 downto 0);
-         
-  --        i_MEM_RegWr : in std_logic;
-  --        i_WB_RegWr  : in std_logic;
+  component ForwardingUnit is
+    port(i_ID_Inst  : in std_logic_vector(31 downto 0);
+         i_EX_Inst  : in std_logic_vector(31 downto 0);
+      
+         i_MEM_RegWr : in std_logic;
+         i_WB_RegWr  : in std_logic;
 
-  --        i_EX_RegWrAddr  : in std_logic_vector(4 downto 0);
-  --        i_MEM_RegWrAddr : in std_logic_vector(4 downto 0);
-  --        i_WB_RegWrAddr  : in std_logic_vector(4 downto 0);
+         i_EX_RegWrAddr  : in std_logic_vector(4 downto 0);
+         i_MEM_RegWrAddr : in std_logic_vector(4 downto 0);
+         i_WB_RegWrAddr  : in std_logic_vector(4 downto 0);
 
-  --        i_BranchSel : in std_logic;
+         i_BranchSel : in std_logic;
 
-  --        o_muxASel : out std_logic_vector(1 downto 0);
-  --        o_muxBSel : out std_logic_vector(1 downto 0);
+         o_muxASel : out std_logic_vector(1 downto 0);
+         o_muxBSel : out std_logic_vector(1 downto 0);
 
-  --        o_muxReadData1Sel : out std_logic_vector(1 downto 0);
-  --        o_muxReadData2Sel : out std_logic_vector(1 downto 0)); 
-  -- end component;
+         o_muxReadData1Sel : out std_logic_vector(1 downto 0);
+         o_muxReadData2Sel : out std_logic_vector(1 downto 0)); 
+  end component;
 
   -------------------------
   ------ Control Unit -----
@@ -404,9 +403,7 @@ architecture structure of MIPS_Processor is
   signal s_IF_pcSelect,
          s_PC_Stall,
          s_IF_Flush,
-         s_IF_ID_Flush,
-         s_IF_ID_Stall,
-         s_IF_ID_RST : std_logic;
+         s_IF_ID_Stall    : std_logic;
 
   -------------------------------------
   ---------- Decode Signals -----------
@@ -591,11 +588,9 @@ begin
              i_s  => s_IF_Flush,
              o_o  => s_IF_Inst);
 
-  s_IF_ID_RST <= (iRST or s_IF_ID_Flush);
-
   g_IF_ID: IF_ID_Register
     port map(i_CLK       => iCLK,
-             i_RST       => s_IF_ID_RST,
+             i_RST       => iRST,
              i_WE        => s_IF_ID_Stall,
              i_IF_Inst   => s_IF_Inst,
              i_IF_PCNext => s_IF_PCNext,
@@ -629,7 +624,6 @@ begin
              o_MEM_WB_Stall => s_MEM_WB_Stall,
                       
              o_IF_Flush     => s_IF_Flush,
-             o_IF_ID_Flush  => s_IF_ID_Flush,
              o_ID_EX_Flush  => s_ID_EX_Flush,
              o_EX_MEM_Flush => s_EX_MEM_Flush,
              o_MEM_WB_Flush => s_MEM_WB_Flush);
@@ -692,7 +686,7 @@ begin
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => b"00",
+             i_s  => s_muxReadData1Sel,
              o_o  => s_ID_DataCompare1);
 
   g_readData2Mux: mux4t1_32
@@ -700,15 +694,15 @@ begin
              i_d1 => s_MEM_ALUout,
              i_d2 => s_EX_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => b"00",
+             i_s  => s_muxReadData2Sel,
              o_o  => s_ID_DataCompare2);
 
-  -- g_compare32: comparator_32
-  --   port map(i_d0 => s_ID_DataCompare1,
-  --            i_d1 => s_ID_DataCompare2,
-  --            o_o  => s_ID_sameData);
+  g_compare32: comparator_32
+    port map(i_d0 => s_ID_DataCompare1,
+             i_d1 => s_ID_DataCompare2,
+             o_o  => s_ID_sameData);
 
-  s_ID_sameData <= '1' when (s_ID_DataCompare1 = s_ID_DataCompare2) else '0';
+  --s_ID_sameData <= '1' when (s_ID_DataCompare1 = s_ID_DataCompare2) else '0';
   s_ID_xor <= s_ID_sameData xor s_ID_BranchType;
   s_ID_and <= s_ID_xor and s_ID_BranchInstr;
 
@@ -777,31 +771,31 @@ begin
 ------ Execution Stage -----
 ----------------------------
 
-  -- g_ForwardingUnit: ForwardingUnit
-  --   port map(i_ID_Inst  => s_ID_Inst,
-  --            i_EX_Inst  => s_EX_Inst,
-                      
-  --            i_MEM_RegWr     => s_MEM_RegWr,
-  --            i_WB_RegWr      => s_RegWr,
+  g_ForwardingUnit: ForwardingUnit
+    port map(i_ID_Inst  => s_ID_Inst,
+             i_EX_Inst  => s_EX_Inst,
+                   
+             i_MEM_RegWr     => s_MEM_RegWr,
+             i_WB_RegWr      => s_RegWr,
 
-  --            i_EX_RegWrAddr  => s_EX_RegWrAddr,
-  --            i_MEM_RegWrAddr => s_MEM_RegWrAddr,
-  --            i_WB_RegWrAddr  => s_RegWrAddr,
+             i_EX_RegWrAddr  => s_EX_RegWrAddr,
+             i_MEM_RegWrAddr => s_MEM_RegWrAddr,
+             i_WB_RegWrAddr  => s_RegWrAddr,
 
-  --            i_BranchSel     => s_ID_and,
+             i_BranchSel     => s_ID_and,
 
-  --            o_muxASel => s_muxASel,
-  --            o_muxBSel => s_muxBSel,
+             o_muxASel => s_muxASel,
+             o_muxBSel => s_muxBSel,
 
-  --            o_muxReadData1Sel => s_muxReadData1Sel,
-  --            o_muxReadData2Sel => s_muxReadData2Sel);
+             o_muxReadData1Sel => s_muxReadData1Sel,
+             o_muxReadData2Sel => s_muxReadData2Sel);
 
   g_muxA: mux4t1_32
     port map(i_d0 => s_EX_readData1,
              i_d1 => s_RegWrData,
              i_d2 => s_MEM_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => b"00",
+             i_s  => s_muxASel,
              o_o  => s_EX_OpDataA);
 
   g_muxB: mux4t1_32
@@ -809,7 +803,7 @@ begin
              i_d1 => s_RegWrData,
              i_d2 => s_MEM_ALUout,
              i_d3 => x"0000_0000",
-             i_s  => b"00",
+             i_s  => s_muxBSel,
              o_o  => s_EX_OpDataB);
 
   g_ALUsrcMux: mux2t1_32b

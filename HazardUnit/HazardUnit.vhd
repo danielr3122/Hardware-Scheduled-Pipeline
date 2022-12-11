@@ -33,7 +33,6 @@ entity HazardUnit is
          o_MEM_WB_Stall : out std_logic;
          
          o_IF_Flush     : out std_logic;
-         o_IF_ID_Flush  : out std_logic;
          o_ID_EX_Flush  : out std_logic;
          o_EX_MEM_Flush : out std_logic;
          o_MEM_WB_Flush : out std_logic); 
@@ -68,13 +67,12 @@ architecture structural of HazardUnit is
         o_MEM_WB_Stall <= '1';
 
         o_IF_Flush <= '1' when (lw = '1' or sw = '1') else
-                      '1' when ((i_JumpInstr = '1') or (i_EX_JumpInstr = '1')) else
+                      '1' when (i_JumpInstr = '1') else
                       '1' when (i_BranchSel = '1') else
                       '1' when (i_JumpReg = '1') else
                       '1' when ((i_EX_jal = '1') or (i_MEM_jal = '1') or (i_WB_jal = '1')) else
                       '0';
 
-        o_IF_ID_Flush <= '0';
         o_ID_EX_Flush  <= '0';
         o_EX_MEM_Flush <= '0';
         o_MEM_WB_Flush <= '0';
