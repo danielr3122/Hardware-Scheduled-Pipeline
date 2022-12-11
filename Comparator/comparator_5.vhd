@@ -18,6 +18,7 @@ end comparator_5;
 
 architecture mixed of comparator_5 is
 
-    o_o <= i_d0 = i_d1;
+    begin
+        o_o <= i_d0 = i_d1;
 
 end mixed;
