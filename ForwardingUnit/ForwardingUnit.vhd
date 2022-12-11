@@ -54,6 +54,8 @@ architecture structural of ForwardingUnit is
 
     signal eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8, eq9, eq10 : std_logic;
 
+    signal cat1, cat2, cat3, cat4 : std_logic_vector(1 downto 0);
+
     begin
 
         ID_Rs <= i_ID_Inst(25 downto 21);
@@ -92,8 +94,8 @@ architecture structural of ForwardingUnit is
                      o_o  => eq4);
 
         cond2 <= (i_WB_RegWr and (not eq3) and (not (i_MEM_RegWr and (not eq1) and eq2)) and eq4);
-
-        with (cond1 & cond2) select
+        cat1 <= cond1 & cond2;
+        with cat1 select
             o_muxASel <= "10" when b"10",
                          "01" when b"01",
                          "00" when others;
@@ -114,7 +116,8 @@ architecture structural of ForwardingUnit is
 
         cond4 <= (i_WB_RegWr and (not eq3) and (not cond3) and eq6);
 
-        with (cond3 & cond4) select
+        cat2 <= cond3 & cond4;
+        with cat2 select
             o_muxBSel <= "10" when b"10",
                          "01" when b"01",
                          "00" when others;
@@ -135,7 +138,8 @@ architecture structural of ForwardingUnit is
 
         cond6 <= (i_BranchSel and eq8);
 
-        with (cond5 & cond6) select
+        cat3 <= cond5 & cond6;
+        with cat3 select
             o_muxReadData2Sel <= b"10" when b"10",
                                  b"01" when b"01",
                                  b"00" when others;
@@ -155,8 +159,9 @@ architecture structural of ForwardingUnit is
                  o_o  => eq10);
 
         cond8 <= (i_BranchSel and eq10);
-
-        with (cond7 & cond8) select
+        
+        cat4 <= cond7 & cond8;
+        with cat4 select
             o_muxReadData1Sel <= b"10" when b"10",
                                  b"01" when b"01",
                                  b"00" when others;
