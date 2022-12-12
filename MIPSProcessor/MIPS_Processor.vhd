@@ -582,10 +582,9 @@ begin
                              (not(s_EX_RegDest(1)) and s_EX_RegDest(0)) or 
                              (not(s_MEM_RegDest(1)) and s_MEM_RegDest(0)) or
                              (not(s_WB_RegDest(1)) and s_WB_RegDest(0))) else
-                   --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
                    '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
                    '0';
-                   
+
   --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
 
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
