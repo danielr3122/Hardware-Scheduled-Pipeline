@@ -407,8 +407,7 @@ architecture structure of MIPS_Processor is
   ----------- Fetch Signals -----------
   -------------------------------------
 
-  signal s_JALmuxToPC,
-         s_WB_JALaddr     : std_logic_vector(31 downto 0);
+  signal s_JALmuxToPC     : std_logic_vector(31 downto 0);
 
   signal s_jumpToPC,
          s_IF_PCPlusFour,
@@ -607,7 +606,7 @@ begin
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and);
  
   g_JALPCMux: mux2t1_32b
-    port map(i_d0 => s_ID_muxToPC
+    port map(i_d0 => s_ID_muxToPC,
              i_d1 => s_WB_JALaddr,
              i_s  => s_IF_JALPCSel,
              o_o  => s_JALmuxToPC);
