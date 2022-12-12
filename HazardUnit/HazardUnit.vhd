@@ -40,7 +40,7 @@ end HazardUnit;
 
 architecture structural of HazardUnit is
 
-    signal lw, sw, bInstr, jInstr, jrInstr : std_logic;
+    signal lw, sw, bInstr, jInstr, j_EX_Instr, jrInstr : std_logic;
 
     begin
 
