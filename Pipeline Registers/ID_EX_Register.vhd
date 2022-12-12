@@ -17,6 +17,7 @@ entity ID_EX_Register is
          i_WE                   : in std_logic;
 
          i_ID_PCNext            : in std_logic_vector(31 downto 0);
+         i_ID_muxToPC           : in std_logic_vector(31 downto 0);
          i_ID_Halt              : in std_logic;
          i_ID_DMemWr            : in std_logic;
          i_ID_Write_Data_Sel    : in std_logic_vector(1 downto 0);
@@ -35,6 +36,7 @@ entity ID_EX_Register is
          i_ID_readData2         : in std_logic_vector(31 downto 0);
 
          o_EX_PCNext            : out std_logic_vector(31 downto 0);
+         o_EX_JALaddr           : out std_logic_vector(31 downto 0);
          o_EX_Halt              : out std_logic;
          o_EX_DMemWr            : out std_logic;
          o_EX_Write_Data_Sel    : out std_logic_vector(1 downto 0);
@@ -99,6 +101,14 @@ architecture structural of ID_EX_Register is
                 i_WriteEn   => i_WE,
                 i_Data      => i_ID_PCNext,
                 o_Data      => o_EX_PCNext);
+
+        g_muxToPC: register_N
+            port map(
+                i_Clock     => i_CLK,
+                i_Reset     => i_RST,
+                i_WriteEn   => i_WE,
+                i_Data      => i_ID_muxToPC,
+                o_Data      => o_EX_JALaddr);
 
         g_Halt: register_N
             generic map(N => 1)

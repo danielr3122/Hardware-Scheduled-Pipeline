@@ -302,6 +302,7 @@ architecture structure of MIPS_Processor is
          i_WE                   : in std_logic;
 
          i_ID_PCNext            : in std_logic_vector(31 downto 0);
+         i_ID_muxToPC           : in std_logic_vector(31 downto 0);
          i_ID_Halt              : in std_logic;
          i_ID_DMemWr            : in std_logic;
          i_ID_Write_Data_Sel    : in std_logic_vector(1 downto 0);
@@ -320,6 +321,7 @@ architecture structure of MIPS_Processor is
          i_ID_readData2         : in std_logic_vector(31 downto 0);
 
          o_EX_PCNext            : out std_logic_vector(31 downto 0);
+         o_EX_JALaddr           : out std_logic_vector(31 downto 0);
          o_EX_Halt              : out std_logic;
          o_EX_DMemWr            : out std_logic;
          o_EX_Write_Data_Sel    : out std_logic_vector(1 downto 0);
@@ -344,6 +346,7 @@ architecture structure of MIPS_Processor is
          i_WE                   : in std_logic;
 
          i_EX_PCNext            : in std_logic_vector(31 downto 0);
+         i_EX_JALaddr           : in std_logic_vector(31 downto 0);
          i_EX_Halt              : in std_logic;
          i_EX_DMemWr            : in std_logic;
          i_EX_Write_Data_Sel    : in std_logic_vector(1 downto 0);
@@ -356,6 +359,7 @@ architecture structure of MIPS_Processor is
          i_EX_Inst              : in std_logic_vector(31 downto 0);
 
          o_MEM_PCNext           : out std_logic_vector(31 downto 0);
+         o_MEM_JALaddr          : out std_logic_vector(31 downto 0);
          o_MEM_Halt             : out std_logic;
          o_MEM_Write_Data_Sel   : out std_logic_vector(1 downto 0);
          o_MEM_RegWr            : out std_logic;
@@ -375,6 +379,7 @@ architecture structure of MIPS_Processor is
          i_WE                   : in std_logic;
 
          i_MEM_PCNext           : in std_logic_vector(31 downto 0);
+         i_MEM_JALaddr          : in std_logic_vector(31 downto 0);
          i_MEM_Halt             : in std_logic;
          i_MEM_Write_Data_Sel   : in std_logic_vector(1 downto 0);
          i_MEM_RegWr            : in std_logic;
@@ -391,6 +396,7 @@ architecture structure of MIPS_Processor is
          o_WB_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_WB_DMemOut           : out std_logic_vector(31 downto 0);
          o_WB_PCNext            : out std_logic_vector(31 downto 0);
+         o_WB_JALaddr           : out std_logic_vector(31 downto 0);
          o_WB_RegDest           : out std_logic_vector(1 downto 0);
          o_WB_RegWrAddr         : out std_logic_vector(4 downto 0);
          o_WB_Inst              : out std_logic_vector(31 downto 0);
@@ -400,6 +406,9 @@ architecture structure of MIPS_Processor is
   -------------------------------------
   ----------- Fetch Signals -----------
   -------------------------------------
+
+  signal s_JALmuxToPC,
+         s_WB_JALaddr     : std_logic_vector(31 downto 0);
 
   signal s_jumpToPC,
          s_IF_PCPlusFour,
@@ -416,7 +425,7 @@ architecture structure of MIPS_Processor is
   ---------- Decode Signals -----------
   -------------------------------------
 
-  signal s_ID_PCNext, 
+  signal s_ID_PCNext,
          s_ID_Inst,
          s_ID_jumpAddr32,
          s_ID_extendedImm,
@@ -469,6 +478,7 @@ architecture structure of MIPS_Processor is
   -------------------------------------
 
   signal s_EX_PCNext,
+         s_EX_JALaddr,
          s_EX_readData1,
          s_EX_readData2,
          s_EX_OpDataA,
@@ -507,6 +517,7 @@ architecture structure of MIPS_Processor is
   -------------------------------------
 
   signal s_MEM_PCNext,
+         s_MEM_JALaddr,
          s_MEM_ALUout,
          s_MEM_DMemData,  -- TODO: aka read data 2
          s_MEM_DMemOut,
@@ -533,6 +544,7 @@ architecture structure of MIPS_Processor is
          s_WB_RegDest : std_logic_vector(1 downto 0);
 
   signal s_WB_DMemOut,
+         s_WB_JALaddr,
          s_WB_PCNext,
          s_WB_ALUout,
          s_WB_Inst : std_logic_vector(31 downto 0);
@@ -590,7 +602,11 @@ begin
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and);
  
-
+  g_JALPCMux: mux2t1_32b
+    port map(i_d0 => s_ID_muxToPC
+             i_d1 => s_WB_JALaddr,
+             i_s  => (not(s_WB_RegDest(1)) and s_WB_RegDest(0)),
+             o_o  => s_JALmuxToPC);
 
   g_PCMux: mux2t1_32b
     port map(i_d0 => s_IF_PCPlusFour,
@@ -771,6 +787,7 @@ begin
              i_WE                => s_ID_EX_Stall,
 
              i_ID_PCNext         => s_ID_PCNext,
+             i_ID_muxToPC        => s_ID_muxToPC,
              i_ID_Halt           => s_ID_Halt,
              i_ID_DMemWr         => s_ID_DMemWr,
              i_ID_Write_Data_Sel => s_ID_Write_Data_Sel,
@@ -789,6 +806,7 @@ begin
              i_ID_readData2      => s_ID_readData2,
 
              o_EX_PCNext         => s_EX_PCNext,
+             o_EX_JALaddr        => s_EX_JALaddr,
              o_EX_Halt           => s_EX_Halt,
              o_EX_DMemWr         => s_EX_DMemWr,
              o_EX_Write_Data_Sel => s_EX_Write_Data_Sel,
@@ -881,6 +899,7 @@ begin
              i_WE                 => s_EX_MEM_Stall,
 
              i_EX_PCNext          => s_EX_PCNext,
+             i_EX_JALaddr         => s_EX_JALaddr,
              i_EX_Halt            => s_EX_Halt,
              i_EX_DMemWr          => s_EX_DMemWr,
              i_EX_Write_Data_Sel  => s_EX_Write_Data_Sel,
@@ -893,6 +912,7 @@ begin
              i_EX_Inst            => s_EX_Inst,
 
              o_MEM_PCNext         => s_MEM_PCNext,
+             o_MEM_JALaddr        => s_MEM_JALaddr,
              o_MEM_Halt           => s_MEM_Halt,
              o_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
              o_MEM_RegWr          => s_MEM_RegWr,
@@ -929,6 +949,7 @@ begin
              i_WE                 => s_MEM_WB_Stall,
 
              i_MEM_PCNext         => s_MEM_PCNext,
+             i_MEM_JALaddr        => s_MEM_JALaddr,
              i_MEM_Halt           => s_MEM_Halt,
              i_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
              i_MEM_RegWr          => s_MEM_RegWr,
@@ -945,6 +966,7 @@ begin
              o_WB_Write_Data_Sel  => s_WB_Write_Data_Sel,
              o_WB_DMemOut         => s_WB_DMemOut,
              o_WB_PCNext          => s_WB_PCNext,
+             o_WB_JALaddr         => s_WB_JALaddr,
              o_WB_RegDest         => s_WB_RegDest,
              o_WB_RegWrAddr       => s_RegWrAddr,
              o_WB_Inst            => s_WB_Inst,

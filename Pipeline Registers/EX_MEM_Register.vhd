@@ -17,6 +17,7 @@ entity EX_MEM_Register is
          i_WE                   : in std_logic;
 
          i_EX_PCNext            : in std_logic_vector(31 downto 0);
+         i_EX_JALaddr           : in std_logic_vector(31 downto 0);
          i_EX_Halt              : in std_logic;
          i_EX_DMemWr            : in std_logic;
          i_EX_Write_Data_Sel    : in std_logic_vector(1 downto 0);
@@ -29,6 +30,7 @@ entity EX_MEM_Register is
          i_EX_Inst              : in std_logic_vector(31 downto 0);
 
          o_MEM_PCNext           : out std_logic_vector(31 downto 0);
+         o_MEM_JALaddr          : out std_logic_vector(31 downto 0);
          o_MEM_Halt             : out std_logic;
          o_MEM_Write_Data_Sel   : out std_logic_vector(1 downto 0);
          o_MEM_RegWr            : out std_logic;
@@ -75,6 +77,14 @@ architecture structural of EX_MEM_Register is
                 i_WriteEn   => i_WE,
                 i_Data      => i_EX_PCNext,
                 o_Data      => o_MEM_PCNext);
+
+        g_JALaddr: register_N
+            port map(
+                i_Clock     => i_CLK,
+                i_Reset     => i_RST,
+                i_WriteEn   => i_WE,
+                i_Data      => i_EX_JALaddr,
+                o_Data      => o_JALaddr);
         
         g_Halt: register_N
             generic map(N => 1)

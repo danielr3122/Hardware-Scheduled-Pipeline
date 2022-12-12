@@ -18,6 +18,7 @@ entity MEM_WB_Register is
          i_WE                   : in std_logic;
 
          i_MEM_PCNext           : in std_logic_vector(31 downto 0);
+         i_MEM_JALaddr          : in std_logic_vector(31 downto 0);
          i_MEM_Halt             : in std_logic;
          i_MEM_Write_Data_Sel   : in std_logic_vector(1 downto 0);
          i_MEM_RegWr            : in std_logic;
@@ -34,6 +35,7 @@ entity MEM_WB_Register is
          o_WB_Write_Data_Sel    : out std_logic_vector(1 downto 0);
          o_WB_DMemOut           : out std_logic_vector(31 downto 0);
          o_WB_PCNext            : out std_logic_vector(31 downto 0);
+         o_WB_JALaddr           : out std_logic_vector(31 downto 0);
          o_WB_RegDest           : out std_logic_vector(1 downto 0);
          o_WB_RegWrAddr         : out std_logic_vector(4 downto 0);
          o_WB_Inst              : out std_logic_vector(31 downto 0);
@@ -71,6 +73,14 @@ architecture structural of MEM_WB_Register is
                 i_WriteEn   => i_WE,
                 i_Data      => i_MEM_PCNext,
                 o_Data      => o_WB_PCNext);
+
+        g_JALaddr: register_N
+            port map(
+                i_Clock     => i_CLK,
+                i_Reset     => i_RST,
+                i_WriteEn   => i_WE,
+                i_Data      => i_MEM_JALaddr,
+                o_Data      => o_WB_JALaddr);
         
         g_Halt: register_N
             generic map(N => 1)
