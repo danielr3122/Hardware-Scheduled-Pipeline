@@ -14,6 +14,9 @@ entity tb_pipeline is
 end tb_pipeline;
 
 architecture behavior of tb_pipeline is
+
+    -- Calculate the clock period as twice the half-period
+    constant cCLK_PER  : time := gCLK_HPER * 2;
   
     component IF_ID_Register is
         generic(N   : integer := 32);
@@ -117,9 +120,6 @@ architecture behavior of tb_pipeline is
              o_WB_RegWr             : out std_logic);
     end component;
 
-    -- Calculate the clock period as twice the half-period
-    constant cCLK_PER  : time := gCLK_HPER * 2;
-
     signal iCLK : std_logic;
 
     -- Fetch Signals
@@ -169,6 +169,17 @@ architecture behavior of tb_pipeline is
 
 
 begin
+
+    -- This process sets the clock value (low for gCLK_HPER, then high
+    -- for gCLK_HPER). Absent a "wait" command, processes restart 
+    -- at the beginning once they have reached the final statement.
+    P_Clock: process
+    begin
+        iCLK <= '0';
+        wait for gCLK_HPER;
+        iCLK <= '1';
+        wait for gCLK_HPER;
+    end process;   
 
     DUT0: IF_ID_Register
         port map(i_CLK       => iCLK,
@@ -260,17 +271,6 @@ begin
                      o_WB_PCNext          => s_WB_PCNext,
                      o_WB_RegWrAddr       => s_WB_RegWrAddr,
                      o_WB_RegWr           => s_WB_RegWr);
-
-    -- This process sets the clock value (low for gCLK_HPER, then high
-    -- for gCLK_HPER). Absent a "wait" command, processes restart 
-    -- at the beginning once they have reached the final statement.
-    P_Clock: process
-    begin
-        iCLK <= '0';
-        wait for gCLK_HPER;
-        iCLK <= '1';
-        wait for gCLK_HPER;
-    end process;   
 
     -- TestBench Process
     P_TB: process
