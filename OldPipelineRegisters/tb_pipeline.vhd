@@ -170,17 +170,6 @@ architecture behavior of tb_pipeline is
 
 begin
 
-    -- This process sets the clock value (low for gCLK_HPER, then high
-    -- for gCLK_HPER). Absent a "wait" command, processes restart 
-    -- at the beginning once they have reached the final statement.
-    P_Clock: process
-    begin
-        iCLK <= '0';
-        wait for gCLK_HPER;
-        iCLK <= '1';
-        wait for gCLK_HPER;
-    end process;   
-
     DUT0: IF_ID_Register
         port map(i_CLK       => iCLK,
                  i_RST       => (s_IF_RST or s_IF_Flush),
@@ -272,9 +261,21 @@ begin
                      o_WB_RegWrAddr       => s_WB_RegWrAddr,
                      o_WB_RegWr           => s_WB_RegWr);
 
+    -- This process sets the clock value (low for gCLK_HPER, then high
+    -- for gCLK_HPER). Absent a "wait" command, processes restart 
+    -- at the beginning once they have reached the final statement.
+    P_Clock: process
+    begin
+        iCLK <= '0';
+        wait for gCLK_HPER;
+        iCLK <= '1';
+        wait for gCLK_HPER;
+    end process;   
+
     -- TestBench Process
     P_TB: process
     begin
+        wait for cCLK_PER;
         
         -- Reset Registers
         s_IF_RST <= '1';
