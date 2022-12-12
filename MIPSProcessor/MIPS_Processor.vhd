@@ -417,6 +417,7 @@ architecture structure of MIPS_Processor is
          s_IF_PCMuxOut    : std_logic_vector(31 downto 0);
 
   signal s_IF_pcSelect,
+         s_IF_JALPCSel,
          s_PC_Stall,
          s_IF_Flush,
          s_IF_ID_Stall    : std_logic;
@@ -597,6 +598,9 @@ begin
                    '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
                    '0';
 
+  s_IF_JALPCSel <= '1' when ((not(s_WB_RegDest(1)) and s_WB_RegDest(0))) else
+                   '0';
+
   --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
 
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
@@ -605,7 +609,7 @@ begin
   g_JALPCMux: mux2t1_32b
     port map(i_d0 => s_ID_muxToPC
              i_d1 => s_WB_JALaddr,
-             i_s  => (not(s_WB_RegDest(1)) and s_WB_RegDest(0)),
+             i_s  => s_IF_JALPCSel,
              o_o  => s_JALmuxToPC);
 
   g_PCMux: mux2t1_32b
