@@ -305,8 +305,6 @@ begin
         s_IF_WE <= '1';
         s_IF_Flush <= '0';
         s_IF_Stall <= '0';
-        
-        wait for gCLK_HPER*2;
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
@@ -324,6 +322,8 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"10101010";
+
+        s_ID_Inst <= x"00000000";
         wait for gCLK_HPER*2;
         
         -- No new value input, values continue through other registers
