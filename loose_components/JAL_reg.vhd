@@ -21,7 +21,7 @@ entity JAL_reg is
          o_postPonedJALsel  : out std_logic_vector(1 downto 0));
 end JAL_reg;
 
-architecture structural of IF_ID_Register is
+architecture structural of JAL_reg is
 
     component register_N is
         generic(N : integer := 32);
