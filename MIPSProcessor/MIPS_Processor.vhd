@@ -118,6 +118,16 @@ architecture structure of MIPS_Processor is
   ----- PC Addressing -----
   -------------------------
 
+  component JAL_reg is
+    port(i_CLK              : in std_logic;
+         i_RST              : in std_logic;
+         i_WE               : in std_logic;
+         i_WB_JALaddr       : in std_logic_vector(31 downto 0);
+         i_WB_RegDest       : in std_logic_vector(1 downto 0);
+         o_postPonedJAL     : out std_logic_vector(31 downto 0);
+         o_postPonedJALsel  : out std_logic_vector(1 downto 0));
+  end component;
+
   component register_N is
     generic(N : integer := 32);
     port(i_Clock    : in std_logic;
@@ -407,7 +417,9 @@ architecture structure of MIPS_Processor is
   ----------- Fetch Signals -----------
   -------------------------------------
 
-  signal s_JALmuxToPC     : std_logic_vector(31 downto 0);
+  signal s_ppJAL, s_JALmuxToPC     : std_logic_vector(31 downto 0);
+
+  signal s_ppJALsel : std_logic_vector(1 downto 0);
 
   signal s_jumpToPC,
          s_IF_PCPlusFour,
@@ -597,7 +609,7 @@ begin
                    '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
                    '0';
 
-  s_IF_JALPCSel <= '1' when ((not(s_WB_RegDest(1)) and s_WB_RegDest(0))) else
+  s_IF_JALPCSel <= '1' when ((not(s_ppJALsel(1)) and s_WB_ppJALsel(0))) else
                    '0';
 
   --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
@@ -605,10 +617,19 @@ begin
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and);
  
+  g_PPJALreg: JAL_reg
+  port map(i_CLK             => iCLK,
+           i_RST             => iRST,
+           i_WE              => '1',
+           i_WB_JALaddr      => s_WB_JALaddr,
+           i_WB_RegDest      => s_WB_RegDest,
+           o_postPonedJAL    => s_ppJAL,
+           o_postPonedJALsel => s_ppJALsel);
+
   g_JALPCMux: mux2t1_32b
     port map(i_d0 => s_ID_muxToPC,
-             i_d1 => s_WB_JALaddr,
-             i_s  => s_IF_JALPCSel,
+             i_d1 => s_ppJAL,
+             i_s  => s_ppJALsel,
              o_o  => s_JALmuxToPC);
 
   g_PCMux: mux2t1_32b
