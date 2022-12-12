@@ -274,7 +274,7 @@ begin
     -- TestBench Process
     P_TB: process
     begin
-        wait for cCLK_HPER*2;
+        wait for gCLK_HPER*2;
         
         -- Reset Registers
         s_IF_RST <= '1';
