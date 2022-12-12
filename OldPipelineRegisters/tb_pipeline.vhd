@@ -10,12 +10,11 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity tb_pipeline is 
-    generic(gCLK_HPER   : time := 50 ns);
+    generic(gCLK_HPER   : time := 10 ns);
 end tb_pipeline;
 
 architecture behavior of tb_pipeline is
 
-    -- Calculate the clock period as twice the half-period
     constant cCLK_PER  : time := gCLK_HPER * 2;
   
     component IF_ID_Register is
@@ -124,47 +123,47 @@ architecture behavior of tb_pipeline is
 
     -- Fetch Signals
 
-    signal s_IF_RST, s_IF_WE, s_IF_Flush, s_IF_Stall : std_logic;
+    signal s_IF_RST, s_IF_WE, s_IF_Flush, s_IF_Stall : std_logic := '0';
 
-    signal s_IF_Inst, s_IF_PCNext, s_ID_Inst, s_ID_PCNext : std_logic_vector(31 downto 0);
+    signal s_IF_Inst, s_IF_PCNext, s_ID_Inst, s_ID_PCNext : std_logic_vector(31 downto 0) := x"00000000";
 
     --Decode Signals
 
     signal s_ID_RST, s_ID_WE, s_ID_Flush, s_ID_Stall,
            s_ID_Halt, s_ID_DMemWr, s_ID_ALUsrc, s_ID_ALUslt, s_ID_nAdd_Sub,
            s_ID_UnsignedSel, s_ID_RegWr, s_EX_Halt, s_EX_DMemWr,
-           s_EX_RegWr, s_EX_ALUsrc, s_EX_ALUslt, s_EX_nAdd_Sub, s_EX_UnsignedSel : std_logic;
+           s_EX_RegWr, s_EX_ALUsrc, s_EX_ALUslt, s_EX_nAdd_Sub, s_EX_UnsignedSel : std_logic := '0';
 
     signal s_ID_Write_Data_Sel, s_ID_ShiftType, s_ID_RegDest,
-           s_EX_Write_Data_Sel, s_EX_ShiftType, s_EX_RegDest : std_logic_vector(1 downto 0);
+           s_EX_Write_Data_Sel, s_EX_ShiftType, s_EX_RegDest : std_logic_vector(1 downto 0) := b"00";
 
-    signal s_EX_Inst, s_ID_extImm, s_ID_readData1, s_ID_readData2, s_EX_readData1, s_EX_readData2, s_EX_extImm, s_EX_PCNext, s_EX_ALUout : std_logic_vector(31 downto 0);
+    signal s_EX_Inst, s_ID_extImm, s_ID_readData1, s_ID_readData2, s_EX_readData1, s_EX_readData2, s_EX_extImm, s_EX_PCNext, s_EX_ALUout : std_logic_vector(31 downto 0) := x"00000000";
 
-    signal s_ID_ALUop, s_EX_ALUop : std_logic_vector(3 downto 0);
+    signal s_ID_ALUop, s_EX_ALUop : std_logic_vector(3 downto 0) := b"0000";
 
     -- Execute Signals
 
-    signal s_EX_RST, s_EX_WE, s_EX_Flush, s_EX_Stall : std_logic;
+    signal s_EX_RST, s_EX_WE, s_EX_Flush, s_EX_Stall : std_logic := '0';
 
-    signal s_EX_Ovfl, s_MEM_Ovfl, s_MEM_Halt, s_MEM_DMemWr, s_MEM_RegWr : std_logic;
+    signal s_EX_Ovfl, s_MEM_Ovfl, s_MEM_Halt, s_MEM_DMemWr, s_MEM_RegWr : std_logic := '0';
 
-    signal s_EX_RegWrAddr, s_MEM_RegWrAddr : std_logic_vector(4 downto 0);
+    signal s_EX_RegWrAddr, s_MEM_RegWrAddr : std_logic_vector(4 downto 0) := b"00000";
 
-    signal s_MEM_PCNext, s_MEM_DMemData, s_MEM_ALUout : std_logic_vector(31 downto 0);
+    signal s_MEM_PCNext, s_MEM_DMemData, s_MEM_ALUout : std_logic_vector(31 downto 0) := x"00000000";
 
-    signal s_MEM_Write_Data_Sel : std_logic_vector(1 downto 0);
+    signal s_MEM_Write_Data_Sel : std_logic_vector(1 downto 0) := "00";
 
     -- Memory Signals
 
-    signal s_MEM_RST, s_MEM_WE, s_MEM_Flush, s_MEM_Stall : std_logic;
+    signal s_MEM_RST, s_MEM_WE, s_MEM_Flush, s_MEM_Stall : std_logic := '0';
 
-    signal s_WB_Halt, s_WB_Ovfl, s_WB_RegWr : std_logic;
+    signal s_WB_Halt, s_WB_Ovfl, s_WB_RegWr : std_logic := '0';
 
-    signal s_WB_ALUout, s_WB_DMemOut, s_WB_PCNext, s_MEM_DMemOut : std_logic_vector(31 downto 0);
+    signal s_WB_ALUout, s_WB_DMemOut, s_WB_PCNext, s_MEM_DMemOut : std_logic_vector(31 downto 0) := x"00000000";
 
-    signal s_WB_Write_Data_Sel : std_logic_vector(1 downto 0);
+    signal s_WB_Write_Data_Sel : std_logic_vector(1 downto 0) := b"00";
 
-    signal s_WB_RegWrAddr : std_logic_vector(4 downto 0);
+    signal s_WB_RegWrAddr : std_logic_vector(4 downto 0) := b"00000";
 
 
 
@@ -264,18 +263,18 @@ begin
     -- This process sets the clock value (low for gCLK_HPER, then high
     -- for gCLK_HPER). Absent a "wait" command, processes restart 
     -- at the beginning once they have reached the final statement.
-    P_Clock: process
-    begin
-        iCLK <= '0';
-        wait for gCLK_HPER;
-        iCLK <= '1';
-        wait for gCLK_HPER;
-    end process;   
+    P_LK: process
+  begin
+    iCLK <= '0';
+    wait for gCLK_HPER;
+    iCLK <= '1';
+    wait for gCLK_HPER;
+  end process;
 
     -- TestBench Process
     P_TB: process
     begin
-        wait for cCLK_PER;
+        wait for cCLK_HPER*2;
         
         -- Reset Registers
         s_IF_RST <= '1';
@@ -299,7 +298,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"00000000";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
         
         -- Write to Registers
         s_IF_RST <= '0';
@@ -323,7 +322,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"10101010";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
         
         -- No new value input, values continue through other registers
         s_IF_RST <= '0';
@@ -347,7 +346,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"10101010";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
         
         -- Write again to Registers
         s_IF_RST <= '0';
@@ -371,7 +370,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"01010101";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
         
         -- Write again to Registers
         s_IF_RST <= '0';
@@ -396,10 +395,10 @@ begin
 
         s_IF_Inst <= x"01010101";
 
-        wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
         
         -- After stalls, flush
         s_IF_RST <= '0';
@@ -423,7 +422,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"11110000";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
         
         -- Write data in after flush
         s_IF_RST <= '0';
@@ -448,10 +447,10 @@ begin
 
         s_IF_Inst <= x"00001111";
 
-        wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
+        wait for gCLK_HPER*2;
 
         s_IF_RST <= '0';
         s_IF_WE <= '0';
@@ -474,7 +473,7 @@ begin
         s_IF_Stall <= '0';
 
         s_IF_Inst <= x"11111111";
-        wait for cCLK_PER;
+        wait for gCLK_HPER*2;
 
     wait;
     end process;
