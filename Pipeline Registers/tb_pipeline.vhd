@@ -310,7 +310,6 @@ begin
     begin
         
         -- Reset
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '1';
         s_IF_WE <= '0';
 
@@ -322,10 +321,10 @@ begin
 
         s_MEM_RST <= '1';
         s_MEM_WE <= '0';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Write to IF
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
@@ -337,10 +336,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -352,10 +351,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -367,10 +366,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -382,10 +381,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
@@ -397,10 +396,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Stall
-        s_IF_Inst <= x"F0F0_F0F0";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -412,10 +411,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '0';
+        s_IF_Inst <= x"F0F0_F0F0";
         wait for cCLK_PER;
 
         -- Flush
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '1';
         s_IF_WE <= '0';
 
@@ -427,10 +426,10 @@ begin
 
         s_MEM_RST <= '1';
         s_MEM_WE <= '0';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Write to IF
-        s_IF_Inst <= x"AAAA_AAAA";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
@@ -442,10 +441,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"AAAA_AAAA";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -457,10 +456,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -472,10 +471,10 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
         -- Propogate
-        s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '0';
 
@@ -487,6 +486,7 @@ begin
 
         s_MEM_RST <= '0';
         s_MEM_WE <= '1';
+        s_IF_Inst <= x"FFFF_FFFF";
         wait for cCLK_PER;
 
     wait;
