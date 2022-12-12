@@ -339,21 +339,6 @@ begin
         s_MEM_WE <= '1';
         wait for cCLK_PER;
 
-        -- Do nothing
-        s_IF_Inst <= x"FFFF_FFFF";
-        s_IF_RST <= '0';
-        s_IF_WE <= '0';
-
-        s_ID_RST <= '0';
-        s_ID_WE <= '1';
-
-        s_EX_RST <= '0';
-        s_EX_WE <= '1';
-
-        s_MEM_RST <= '0';
-        s_MEM_WE <= '1';
-        wait for cCLK_PER;
-
         -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
@@ -387,37 +372,121 @@ begin
         -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
-        s_IF_WE <= '1';
+        s_IF_WE <= '0';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
         wait for cCLK_PER;
 
-        -- Write to IF
+        -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
+        wait for cCLK_PER;
+
+        -- Stall
+        s_IF_Inst <= x"F0F0_F0F0";
+        s_IF_RST <= '0';
+        s_IF_WE <= '0';
+
+        s_ID_RST <= '0';
+        s_ID_WE <= '0';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '0';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '0';
+        wait for cCLK_PER;
+
+        -- Flush
+        s_IF_Inst <= x"FFFF_FFFF";
+        s_IF_RST <= '1';
+        s_IF_WE <= '0';
+
+        s_ID_RST <= '1';
+        s_ID_WE <= '0';
+
+        s_EX_RST <= '1';
+        s_EX_WE <= '0';
+
+        s_MEM_RST <= '1';
+        s_MEM_WE <= '0';
         wait for cCLK_PER;
 
         -- Write to IF
+        s_IF_Inst <= x"AAAA_AAAA";
+        s_IF_RST <= '0';
+        s_IF_WE <= '1';
+
+        s_ID_RST <= '0';
+        s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
+        wait for cCLK_PER;
+
+        -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
         wait for cCLK_PER;
 
-        -- Write to IF
+        -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
         s_IF_WE <= '1';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
+        wait for cCLK_PER;
+
+        -- Propogate
+        s_IF_Inst <= x"FFFF_FFFF";
+        s_IF_RST <= '0';
+        s_IF_WE <= '1';
+
+        s_ID_RST <= '0';
+        s_ID_WE <= '1';
+
+        s_EX_RST <= '0';
+        s_EX_WE <= '1';
+
+        s_MEM_RST <= '0';
+        s_MEM_WE <= '1';
         wait for cCLK_PER;
 
     wait;
