@@ -83,7 +83,7 @@ architecture behavior of tb_pipeline is
 
     signal s_ID_RST, s_ID_WE, s_ID_Flush, s_ID_Stall : std_logic;
 
-    signal s_ID_PCNext, s_ID_Inst, s_ID_extImm, s_ID_readData1, s_ID_readData2 : std_logic_vector(31 downto 0) := x"00000";
+    signal s_ID_PCNext, s_ID_Inst, s_ID_extImm, s_ID_readData1, s_ID_readData2 : std_logic_vector(31 downto 0) := x"00000000";
 
     signal s_ID_Halt, s_ID_DMemWr, s_ID_ALUsrc, s_ID_ALUslt, s_ID_nAdd_Sub, s_ID_UnsignedSel, s_ID_RegWr, s_ID_JumpInstr : std_logic;
 
