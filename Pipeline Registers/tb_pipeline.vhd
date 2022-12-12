@@ -447,7 +447,7 @@ begin
         -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
-        s_IF_WE <= '1';
+        s_IF_WE <= '0';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
@@ -462,7 +462,7 @@ begin
         -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
-        s_IF_WE <= '1';
+        s_IF_WE <= '0';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
@@ -477,7 +477,7 @@ begin
         -- Propogate
         s_IF_Inst <= x"FFFF_FFFF";
         s_IF_RST <= '0';
-        s_IF_WE <= '1';
+        s_IF_WE <= '0';
 
         s_ID_RST <= '0';
         s_ID_WE <= '1';
