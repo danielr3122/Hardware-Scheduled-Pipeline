@@ -323,9 +323,6 @@ begin
 
         s_IF_Inst <= x"10101010";
         wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
-        wait for cCLK_PER;
         
         -- No new value input, values continue through other registers
         s_IF_RST <= '0';
