@@ -447,7 +447,10 @@ architecture structure of MIPS_Processor is
          s_ID_EX_Stall,
          s_ID_EX_Flush,
          s_ID_RST,
-         s_invCLK : std_logic;
+         s_invCLK, 
+         s_pcSel_jumpCheck,
+         s_pcSel_jumpRegCheck,
+         s_pcSel_branchCheck : std_logic;
 
   signal s_ID_Write_Data_Sel,
          s_ID_ShiftType,
@@ -557,13 +560,26 @@ begin
 --------------------------
 ------- Fetch Stage ------
 --------------------------
+  
+  s_pcSel_jumpCheck <= '1' when (s_ID_Inst(31 downto 26) = "000010") else
+                       '0';
 
-  -- s_IF_pcSelect <= '1' when s_ID_JumpInstr else
-  --                  '1' when s_ID_JumpReg else
-  --                  '1' when s_ID_and else
-  --                  '0';
+  s_pcSel_jumpRegCheck <= '1' when (s_ID_Inst(31 downto 26) & s_ID_Inst(5 downto 0) = "000000001000") else
+                          '0';
+  
+  s_pcSel_branchCheck <= '1' when (s_ID_Inst(31 downto 26) = "000100" or 
+                                   s_ID_Inst(31 downto 26) = "000101") else
+                         '0';
 
-  s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
+  s_IF_pcSelect <= '1' when (s_ID_JumpInstr = '1' and s_pcSel_jumpCheck = '1') else
+                   '1' when (s_ID_JumpReg = '1' and s_pcSel_jumpRegCheck = '1') else
+                   '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
+                   '0';
+
+  --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
+  --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and);
+ 
+
 
   g_PCMux: mux2t1_32b
     port map(i_d0 => s_IF_PCPlusFour,
