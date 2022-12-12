@@ -75,6 +75,8 @@ architecture behavior of tb_pipeline is
              o_EX_Inst              : out std_logic_vector(31 downto 0));
     end component;
 
+    signal s_Clock : std_logic;
+
     signal s_IF_RST, s_IF_WE, s_IF_Flush, s_IF_Stall : std_logic;
 
     signal s_IF_Inst, s_IF_PCNext : std_logic_vector(31 downto 0);
