@@ -323,7 +323,7 @@ begin
 
         s_IF_Inst <= x"10101010";
 
-        s_ID_Inst <= x"00000000";
+        s_ID_Inst <= x"10101010";
         wait for gCLK_HPER*2;
         
         -- No new value input, values continue through other registers
