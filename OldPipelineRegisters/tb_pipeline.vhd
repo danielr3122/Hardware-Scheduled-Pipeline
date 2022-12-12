@@ -173,7 +173,7 @@ begin
     DUT0: IF_ID_Register
         port map(i_CLK       => iCLK,
                  i_RST       => (s_IF_RST or s_IF_Flush),
-                 i_WE        => (s_IF_WE or s_IF_Stall), 
+                 i_WE        => s_IF_WE, 
                  i_IF_Inst   => s_IF_Inst,
                  i_IF_PCNext => s_IF_PCNext,
                  o_ID_Inst   => s_ID_Inst,
@@ -182,7 +182,7 @@ begin
     DUT1: ID_EX_Register
         port map(i_CLK               => iCLK,
                  i_RST               => (s_ID_RST or s_ID_Flush),
-                 i_WE                => (s_ID_WE or s_ID_Stall),
+                 i_WE                => s_ID_WE,
                  i_ID_PCNext         => s_ID_PCNext,
                  i_ID_Halt           => s_ID_Halt,
                  i_ID_DMemWr         => s_ID_DMemWr,
@@ -219,7 +219,7 @@ begin
         DUT2: EX_MEM_Register
             port map(i_CLK                => iCLK,
                      i_RST                => (s_EX_RST or s_EX_Flush),
-                     i_WE                 => (s_EX_WE or s_EX_Stall),
+                     i_WE                 => s_EX_WE,
                      i_EX_PCNext          => s_EX_PCNext,
                      i_EX_Halt            => s_EX_Halt,
                      i_EX_DMemWr          => s_EX_DMemWr,
@@ -242,7 +242,7 @@ begin
         DUT3: MEM_WB_Register
             port map(i_CLK                => iCLK,
                      i_RST                => (s_MEM_RST or s_MEM_Flush),
-                     i_WE                 => (s_MEM_WE or s_MEM_Stall),
+                     i_WE                 => s_MEM_WE,
                      i_MEM_PCNext         => s_MEM_PCNext,
                      i_MEM_Halt           => s_MEM_Halt,
                      i_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
