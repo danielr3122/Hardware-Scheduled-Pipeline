@@ -574,13 +574,19 @@ begin
   
   s_pcSel_branchCheck <= '1' when (s_ID_Inst(31 downto 26) = "000100" or 
                                    s_ID_Inst(31 downto 26) = "000101") else
-                         '0';
+                         '0'; 
 
   s_IF_pcSelect <= '1' when (s_ID_JumpInstr = '1' and s_pcSel_jumpCheck = '1') else
                    '1' when (s_ID_JumpReg = '1' and s_pcSel_jumpRegCheck = '1') else
-                   '1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
+                   '1' when ((not(s_ID_RegDest(1)) and s_ID_RegDest(0)) or
+                             (not(s_EX_RegDest(1)) and s_EX_RegDest(0)) or 
+                             (not(s_MEM_RegDest(1)) and s_MEM_RegDest(0)) or
+                             (not(s_WB_RegDest(1)) and s_WB_RegDest(0))) else
+                   --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
                    '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
                    '0';
+                   
+  --'1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
 
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and or s_EX_JumpInstr);
   --s_IF_pcSelect <= (s_ID_JumpInstr or s_ID_JumpReg or s_ID_and);
