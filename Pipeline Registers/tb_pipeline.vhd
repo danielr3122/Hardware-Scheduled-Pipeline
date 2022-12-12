@@ -103,6 +103,54 @@ architecture behavior of tb_pipeline is
 
 begin
 
+    g_DUT0: IF_ID_Register
+        port map(i_CLK       => s_Clock,
+                 i_RST       => s_IF_RST,
+                 i_WE        => s_IF_WE,
+                 i_IF_Inst   => s_IF_Inst,
+                 i_IF_PCNext => s_IF_PCNext,
+                 o_ID_Inst   => s_ID_Inst,
+                 o_ID_PCNext => s_ID_PCNext);
+
+    g_DUT1: ID_EX_Register
+        port map(i_CLK               => s_Clock,
+                 i_RST               => s_ID_RST,
+                 i_WE                => s_ID_WE,
+                 i_ID_PCNext         => s_ID_PCNext,
+                 i_ID_Halt           => s_ID_Halt,
+                 i_ID_DMemWr         => s_ID_DMemWr,
+                 i_ID_Write_Data_Sel => s_ID_Write_Data_Sel,
+                 i_ID_ALUsrc         => s_ID_ALUsrc,
+                 i_ID_ShiftType      => s_ID_ShiftType,
+                 i_ID_ALUop          => s_ID_ALUop,
+                 i_ID_ALUslt         => s_ID_ALUslt,
+                 i_ID_nAdd_Sub       => s_ID_nAdd_Sub,
+                 i_ID_UnsignedSelect => s_ID_UnsignedSel,
+                 i_ID_RegWr          => s_ID_RegWr,
+                 i_ID_JumpInstr      => s_ID_JumpInstr,
+                 i_ID_RegDest        => s_ID_RegDest,
+                 i_ID_Inst           => s_ID_Inst,
+                 i_ID_extendedImm    =>  s_ID_extImm,
+                 i_ID_readData1      => s_ID_readData1,
+                 i_ID_readData2      => s_ID_readData2,
+                 o_EX_PCNext         => s_EX_PCNext,
+                 o_EX_Halt           => s_EX_Halt,
+                 o_EX_DMemWr         => s_EX_DMemWr,
+                 o_EX_Write_Data_Sel => s_EX_Write_Data_Sel,
+                 o_EX_RegWr          => s_EX_RegWr,
+                 o_EX_JumpInstr      => s_EX_JumpInstr,
+                 o_EX_readData1      => s_EX_readData1,
+                 o_EX_readData2      => s_EX_readData2,
+                 o_EX_extendedImm    => s_EX_extImm,
+                 o_EX_ALUsrc         => s_EX_ALUsrc,
+                 o_EX_ShiftType      => s_EX_ShiftType,
+                 o_EX_ALUop          => s_EX_ALUop,
+                 o_EX_ALUslt         => s_EX_ALUslt,
+                 o_EX_nAdd_Sub       => s_EX_nAdd_Sub,
+                 o_EX_UnsignedSelect => s_EX_UnsignedSel,
+                 o_EX_RegDest        => s_EX_RegDest,
+                 o_EX_Inst           => s_EX_Inst);
+
     -- This process sets the clock value (low for gCLK_HPER, then high
     -- for gCLK_HPER). Absent a "wait" command, processes restart 
     -- at the beginning once they have reached the final statement.
