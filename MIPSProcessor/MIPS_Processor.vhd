@@ -616,7 +616,7 @@ begin
              i_JumpInstr    => s_ID_JumpInstr,
              i_EX_JumpInstr => s_EX_JumpInstr,
 
-             i_BranchSel  => '0',--s_ID_and,
+             i_BranchSel  => s_ID_and,
              i_JumpReg    => s_ID_JumpReg,
                       
              i_EX_jal  => (not(s_EX_RegDest(1)) and s_EX_RegDest(0)),
