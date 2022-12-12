@@ -84,7 +84,7 @@ architecture structural of EX_MEM_Register is
                 i_Reset     => i_RST,
                 i_WriteEn   => i_WE,
                 i_Data      => i_EX_JALaddr,
-                o_Data      => o_JALaddr);
+                o_Data      => o_MEM_JALaddr);
         
         g_Halt: register_N
             generic map(N => 1)
