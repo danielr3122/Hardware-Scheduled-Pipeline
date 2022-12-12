@@ -272,7 +272,7 @@ begin
     g_DUT3: MEM_WB_Register
         port map(i_CLK                => s_Clock,
                  i_RST                => s_MEM_RST,
-                 i_WE                 => s_MEM_WB,
+                 i_WE                 => s_MEM_WE,
                  i_MEM_PCNext         => s_MEM_PCNext,
                  i_MEM_Halt           => s_MEM_Halt,
                  i_MEM_Write_Data_Sel => s_MEM_Write_Data_Sel,
