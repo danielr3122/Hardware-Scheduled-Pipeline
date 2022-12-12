@@ -168,6 +168,7 @@ architecture structure of MIPS_Processor is
          i_BranchSel  : in std_logic;
          i_JumpReg    : in std_logic;
          
+         i_ID_jal  : in std_logic;
          i_EX_jal  : in std_logic;
          i_MEM_jal : in std_logic;
          i_WB_jal  : in std_logic;
@@ -450,6 +451,7 @@ architecture structure of MIPS_Processor is
          s_invCLK, 
          s_pcSel_jumpCheck,
          s_pcSel_jumpRegCheck,
+         s_pcSel_jalCheck,
          s_pcSel_branchCheck : std_logic;
 
   signal s_ID_Write_Data_Sel,
@@ -566,6 +568,9 @@ begin
 
   s_pcSel_jumpRegCheck <= '1' when (s_ID_Inst(31 downto 26) & s_ID_Inst(5 downto 0) = "000000001000") else
                           '0';
+
+  s_pcSel_jalCheck <= '1' when (s_ID_Inst(31 downto 26) = "000011") else
+                      '0';
   
   s_pcSel_branchCheck <= '1' when (s_ID_Inst(31 downto 26) = "000100" or 
                                    s_ID_Inst(31 downto 26) = "000101") else
@@ -573,6 +578,7 @@ begin
 
   s_IF_pcSelect <= '1' when (s_ID_JumpInstr = '1' and s_pcSel_jumpCheck = '1') else
                    '1' when (s_ID_JumpReg = '1' and s_pcSel_jumpRegCheck = '1') else
+                   '1' when (s_ID_JumpInstr = '1' and s_pcSel_jalCheck = '1') else
                    '1' when (s_ID_and = '1' and s_pcSel_branchCheck = '1') else
                    '0';
 
@@ -635,6 +641,7 @@ begin
              i_BranchSel  => s_ID_and,
              i_JumpReg    => s_ID_JumpReg,
                       
+             i_ID_jal  => (not(s_ID_RegDest(1)) and s_ID_RegDest(0)),
              i_EX_jal  => (not(s_EX_RegDest(1)) and s_EX_RegDest(0)),
              i_MEM_jal => (not(s_MEM_RegDest(1)) and s_MEM_RegDest(0)),
              i_WB_jal  => (not(s_WB_RegDest(1)) and s_WB_RegDest(0)),
